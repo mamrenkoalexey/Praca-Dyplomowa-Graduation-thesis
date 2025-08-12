@@ -19,3 +19,11 @@ spring:
     user:
       name: admin
       password: admin
+  thymeleaf:
+    cache: false
+  web:
+    resources:
+      cache:
+        period: 0
+      chain:
+        cache: false
