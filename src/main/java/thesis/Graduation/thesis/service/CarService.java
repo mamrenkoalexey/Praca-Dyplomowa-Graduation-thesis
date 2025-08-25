@@ -1,7 +1,9 @@
 package thesis.Graduation.thesis.service;
 
 import org.springframework.stereotype.Service;
+import thesis.Graduation.thesis.entity.BodyType;
 import thesis.Graduation.thesis.entity.Car;
+import thesis.Graduation.thesis.entity.EngineType;
 import thesis.Graduation.thesis.repository.CarRepository;
 
 import java.util.List;
@@ -43,4 +45,31 @@ public class CarService {
     public void deleteCar(Long id) {
         carRepository.deleteById(id);
     }
+
+
+    public List<String> getAllBrands() {
+        return carRepository.findAllBrands();
+    }
+
+    public List<String> getAllModels() {
+        return carRepository.findAllModels();
+    }
+
+
+    public List<String> getAllBodyTypes() {
+        return carRepository.findAllBodyTypes();
+    }
+
+    public List<String> findAllEngineTypes() {
+        return carRepository.findAllEngineTypes();
+    }
+
+    public List<Integer> getAllYears() {
+        return carRepository.findAllYears();
+    }
+
+    public List<Car> findSearchCars(String brand, String carModel, BodyType bodyType, Double price, EngineType engineType, Integer year) {
+        return carRepository.findSearchCars(brand, carModel, bodyType, price, engineType, year);
+    }
+
 }
