@@ -77,12 +77,12 @@ public class Car {
         this.bodyType = bodyType;
     }
 
-    public EngineType getEngineType() {
-        return engineType;
+    public FuelType getFuelType() {
+        return fuelType;
     }
 
-    public void setEngineType(EngineType engineType) {
-        this.engineType = engineType;
+    public void setFuelType(FuelType fuelType) {
+        this.fuelType = fuelType;
     }
 
     @Column(nullable = false)
@@ -105,19 +105,19 @@ public class Car {
     private BodyType bodyType;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "engine_type", nullable = false)
-    private EngineType engineType;
+    @Column(name = "fuel_type", nullable = false)
+    private FuelType fuelType;
 
     public Car() {
     }
 
-    public Car(String brand, String model, int year, double price, int mileage, BodyType bodyType, EngineType engineType) {
+    public Car(String brand, String model, int year, double price, int mileage, BodyType bodyType, FuelType fuelType) {
         this.brand = brand;
         this.model = model;
         this.year = year;
         this.price = price;
         this.mileage = mileage;
         this.bodyType = bodyType;
-        this.engineType = engineType;
+        this.fuelType = fuelType;
     }
 }

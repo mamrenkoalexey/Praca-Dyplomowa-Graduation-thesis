@@ -1,0 +1,33 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="select2-css">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
+</head>
+
+<body th:fragment="select2-js">
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const selects = document.querySelectorAll('select.select2-dark');
+
+        selects.forEach(select => {
+            const name = select.getAttribute('name');
+            let placeholder = "Wybierz opcję";
+
+            switch (name) {
+                case 'brand': placeholder = 'Marka pojazdu'; break;
+                case 'carModel': placeholder = 'Model pojazdu'; break;
+                case 'bodyType': placeholder = 'Typ nadwozia'; break;
+                case 'fuelType': placeholder = 'Rodzaj paliwa'; break;
+                case 'year': placeholder = 'Rok produkcji'; break;
+            }
+
+            $(select).select2({
+                placeholder: placeholder,
+                width: '100%'
+            });
+        });
+    });
+</script>
+</body>
+</html>

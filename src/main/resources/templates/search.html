@@ -4,30 +4,151 @@
       layout:decorate="layout.html">
 
 <head>
-    <title>Wyszukaj</title>
+    <title>Wyszukaj Samochód</title>
 </head>
 <body>
 
-<div layout:fragment="content">
-    <div class="section">
-        <h2 class="section-title">Szukane auto</h2>
-        <div class="offers-grid">
+<div layout:fragment="content" class="bg-gray-950 text-white font-sans">
+
+    <section class="text-center py-3 bg-gradient-dark">
+        <div class="container">
+            <h2 class="display-5 fw-bold mb-3">Szukane Samochody</h2>
+        </div>
+    </section>
+
+    <section class="content py-5">
+        <form action="/search" method="get" class="row g-3 filter-form">
+
+            <div class="col-md-4">
+                <select style="width:100%" class="select2-dark" name="brand">
+                    <option value="">Marka Pojazdu</option>
+                    <th:block th:each="brand : ${brands}">
+                        <option th:value="${brand}" th:text="${brand}"
+                                th:selected="${brand == selBrand}"></option>
+                    </th:block>
+                </select>
+            </div>
+
+            <div class="col-md-4">
+                <select style="width:100%" class="select2-dark" name="carModel">
+                    <option value="">Model Pojadzu</option>
+                    <th:block th:each="carModel : ${carModels}">
+                        <option th:value="${carModel}" th:text="${carModel}"
+                                th:selected="${carModel == selCarModel}"></option>
+                    </th:block>
+                </select>
+            </div>
+
+            <div class="col-md-4">
+                <select style="width:100%" class="select2-dark" name="bodyType">
+                    <option value="">Typ Nadwozia</option>
+                    <th:block th:each="body : ${bodyTypes}">
+                        <option th:value="${body}" th:text="${body}"
+                                th:selected="${body == selBodyType}"></option>
+                    </th:block>
+                </select>
+            </div>
+
+            <div class="col-md-4">
+                <input th:value="${priceFrom}" type="number" name="priceFrom" class="input-dark"
+                       placeholder="Cena od" min="5000">
+            </div>
+
+            <div class="col-md-4">
+                <input th:value="${priceTo}" type="number" name="priceTo" class="input-dark"
+                       placeholder="Cena do" min="5001">
+            </div>
+
+            <div class="col-md-4">
+                <select style="width:100%" class="select2-dark" name="fuelType">
+                    <option value="">Rodzaj paliwa</option>
+                    <th:block th:each="fuel : ${fuelTypes}">
+                        <option th:value="${fuel}" th:text="${fuel}"
+                                th:selected="${fuel == selFuelType}"></option>
+                    </th:block>
+                </select>
+            </div>
+
+            <div class="col-md-4">
+                <select style="width:100%" class="select2-dark" name="year">
+                    <option value="">Rok produkcji</option>
+                    <th:block th:each="year : ${years}">
+                        <option th:value="${year}" th:text="${year}" th:selected="${year == selYear}"></option>
+                    </th:block>
+                </select>
+            </div>
+
+            <div class="col-md-4">
+                <input th:value="${mileageFrom}" type="number" name="mileageFrom" class="input-dark"
+                       placeholder="Przebieg od" min="1">
+            </div>
+
+            <div class="col-md-4">
+                <input th:value="${mileageTo}" type="number" name="mileageTo" class="input-dark"
+                       placeholder="Przebieg do" min="2">
+            </div>
+
+            <div class="col-md-12">
+                <button type="submit" class="btn btn-primary rounded-pill w-100">
+                    Wyszukaj
+                    <i class="bi bi-search"></i>
+                </button>
+            </div>
+        </form>
+    </section>
+
+    <section class="container pb-3">
+        <div th:if="${#lists.isEmpty(listOfSearchCars)}">
+            <div class="info-content">
+                <p style="color: red; text-align: center">
+                    Nie znaleziono samochodów według podanych kryteriów.
+                </p>
+            </div>
+        </div>
+
+        <div th:if="${not #lists.isEmpty(listOfSearchCars)}" class="container pb-5">
             <div class="offer-card" th:each="car : ${listOfSearchCars}">
                 <div class="offer-image">
                     <img src="car.png" alt="Car image">
                 </div>
                 <div class="offer-content">
                     <h3 th:text="${car.brand + ' ' + car.model}">Nazwa</h3>
-                    <p th:text="'Rok: ' + ${car.year} + ', Przebieg: ' + ${car.mileage} + ' km'">
+                    <p th:text="'Rok: ' + ${car.year} + ' Przebieg: ' + ${car.mileage} + ' km'">
                         Dodatkowa informacja
                     </p>
                     <p class="price" th:text="${car.price + ' PLN'}">Cena</p>
                 </div>
             </div>
         </div>
-    </div>
+    </section>
 
+    <section class="text-center py-3 bg-gradient-dark">
+        <div class="container">
+            <h2 class="display-5 fw-bold mb-3">Może zainteresują Cię inne oferty</h2>
+            <p class="text-secondary mb-4">Przeglądaj, wybieraj i porównuj samochody różnych marek</p>
+        </div>
+    </section>
 
+    <section class="container py-5">
+        <div class="row g-4">
+            <div class="col-sm-6 col-lg-4" th:each="car : ${listOfCars}">
+                <div class="card bg-black border border-secondary h-100 shadow-sm car-card">
+                    <img src="car.png" alt="Car image" class="card-img-top">
+                    <div class="card-body">
+                        <h3 class="card-title text-light" th:text="${car.brand + ' ' + car.model}">Nazwa</h3>
+                        <p class="card-text text-secondary"
+                           th:text="'Rok: ' + ${car.year} + ' Przebieg: ' + ${car.mileage} + ' km'">Dodatkowa
+                            informacja</p>
+                        <p class="text-primary fw-semibold fs-5 mb-3" th:text="${car.price + ' PLN'}">Cena</p>
+                        <button class="btn btn-primary w-100">Szczegóły</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 </div>
+
+<th:insert fragment="~{fragments/select2 :: select2-js}"/>
+
 </body>
 </html>

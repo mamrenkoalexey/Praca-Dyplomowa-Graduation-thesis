@@ -3,7 +3,7 @@ package thesis.Graduation.thesis.service;
 import org.springframework.stereotype.Service;
 import thesis.Graduation.thesis.entity.BodyType;
 import thesis.Graduation.thesis.entity.Car;
-import thesis.Graduation.thesis.entity.EngineType;
+import thesis.Graduation.thesis.entity.FuelType;
 import thesis.Graduation.thesis.repository.CarRepository;
 
 import java.util.List;
@@ -37,7 +37,7 @@ public class CarService {
         car.setPrice(updatedCar.getPrice());
         car.setMileage(updatedCar.getMileage());
         car.setBodyType(updatedCar.getBodyType());
-        car.setEngineType(updatedCar.getEngineType());
+        car.setFuelType(updatedCar.getFuelType());
         car.setAvailable(updatedCar.isAvailable());
         return carRepository.save(car);
     }
@@ -56,20 +56,28 @@ public class CarService {
     }
 
 
-    public List<String> getAllBodyTypes() {
-        return carRepository.findAllBodyTypes();
-    }
-
-    public List<String> findAllEngineTypes() {
-        return carRepository.findAllEngineTypes();
-    }
-
     public List<Integer> getAllYears() {
         return carRepository.findAllYears();
     }
 
-    public List<Car> findSearchCars(String brand, String carModel, BodyType bodyType, Double price, EngineType engineType, Integer year) {
-        return carRepository.findSearchCars(brand, carModel, bodyType, price, engineType, year);
-    }
+    public List<Car> findSearchCars(String brand,
+                                    String carModel,
+                                    BodyType bodyType,
+                                    Double priceFrom,
+                                    Double priceTo,
+                                    FuelType fuelType,
+                                    Integer year,
+                                    Integer mileageFrom,
+                                    Integer mileageTo) {
 
+        System.out.println("-> Search params: brand=" + brand + ", model=" + carModel
+                + ", body=" + bodyType + ", priceFrom=" + priceFrom + ", priceTo="
+                + priceTo + ", fuel=" + fuelType + ", year=" + year + ", mileageFrom="
+                + mileageFrom + ", mileageTo=" + mileageTo);
+
+        //TODO test price, mileage to normal value.
+
+        return carRepository.findSearchCars(
+                brand, carModel, bodyType, priceFrom, priceTo, fuelType, year, mileageFrom, mileageTo);
+    }
 }

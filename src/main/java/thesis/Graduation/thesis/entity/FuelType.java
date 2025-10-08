@@ -1,6 +1,6 @@
 package thesis.Graduation.thesis.entity;
 
-public enum EngineType {
+public enum FuelType {
     PETROL,
     DIESEL,
     ELECTRIC,
