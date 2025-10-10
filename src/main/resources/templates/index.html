@@ -82,14 +82,19 @@
         <div class="row g-4">
             <div class="col-sm-6 col-lg-4" th:each="car : ${randomCars}">
                 <div class="card bg-black border border-secondary h-100 shadow-sm car-card">
-                    <img src="car.png" alt="Car image" class="card-img-top">
+                    <div class="image-wrapper">
+                        <img th:src="@{/car.png}" alt="Car image" class="card-img-top">
+                        <a th:href="@{/car/{id}(id=${car.id}, from='/')}"
+                           class="btn btn-primary btn-details">Szczegóły</a>
+
+                    </div>
                     <div class="card-body">
                         <h3 class="card-title text-light" th:text="${car.brand + ' ' + car.model}">Nazwa</h3>
                         <p class="card-text text-secondary"
                            th:text="'Rok: ' + ${car.year} + ' Przebieg: ' + ${car.mileage} + ' km'">Dodatkowa
                             informacja</p>
                         <p class="text-primary fw-semibold fs-5 mb-3" th:text="${car.price + ' PLN'}">Cena</p>
-                        <button class="btn btn-primary w-100">Szczegóły</button>
+
                     </div>
                 </div>
             </div>

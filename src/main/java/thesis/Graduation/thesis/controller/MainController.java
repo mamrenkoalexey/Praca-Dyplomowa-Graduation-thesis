@@ -4,13 +4,13 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import thesis.Graduation.thesis.entity.BodyType;
 import thesis.Graduation.thesis.entity.Car;
 import thesis.Graduation.thesis.entity.FuelType;
 import thesis.Graduation.thesis.service.CarService;
 
-import java.util.Collections;
 import java.util.List;
 
 
@@ -31,12 +31,7 @@ public class MainController {
         model.addAttribute("fuelTypes", FuelType.values());
         model.addAttribute("years", carService.getAllYears());
 
-        List<Car> listOfCars = carService.getAllCars();
-
-        Collections.shuffle(listOfCars);
-
-        List<Car> randomCars = listOfCars.stream().limit(6).toList();
-        model.addAttribute("randomCars", randomCars);
+        model.addAttribute("randomCars", carService.randomCars(6));
         return "index";
     }
 
@@ -52,6 +47,19 @@ public class MainController {
                          @RequestParam(required = false) Integer mileageFrom,
                          @RequestParam(required = false) Integer mileageTo,
                          Model model) {
+
+        boolean noCriteria = (brand == null || brand.isBlank())
+                && (carModel == null || carModel.isBlank())
+                && bodyType == null
+                && priceFrom == null
+                && priceTo == null
+                && fuelType == null
+                && year == null
+                && mileageFrom == null
+                && mileageTo == null;
+
+        model.addAttribute("noCriteria", noCriteria);
+
 
         List<Car> listOfSearchCars = carService.findSearchCars(brand, carModel, bodyType, priceFrom, priceTo,
                 fuelType, year, mileageFrom, mileageTo);
@@ -79,15 +87,11 @@ public class MainController {
         model.addAttribute("mileageFrom", mileageFrom);
         model.addAttribute("mileageTo", mileageTo);
 
-        List<Car> listOfCars = carService.getAllCars();
-        Collections.shuffle(listOfCars);
-        List<Car> randomCars = listOfCars.stream().limit(12).toList();
-        model.addAttribute("listOfCars", randomCars);
+        model.addAttribute("listOfCars", carService.randomCars(12));
 
 
         return "search";
     }
-
 }
 
 

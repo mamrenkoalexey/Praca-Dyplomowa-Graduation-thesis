@@ -98,7 +98,16 @@
     </section>
 
     <section class="container pb-3">
-        <div th:if="${#lists.isEmpty(listOfSearchCars)}">
+        <div th:if="${noCriteria}">
+            <div class="info-content">
+                <p style="color: red; text-align: center">
+                    Proszę podać przynajmniej jeden kryterium wyszukiwania.
+                </p>
+            </div>
+        </div>
+
+
+        <div th:if="${!noCriteria} and ${#lists.isEmpty(listOfSearchCars)}">
             <div class="info-content">
                 <p style="color: red; text-align: center">
                     Nie znaleziono samochodów według podanych kryteriów.
@@ -106,17 +115,20 @@
             </div>
         </div>
 
-        <div th:if="${not #lists.isEmpty(listOfSearchCars)}" class="container pb-5">
-            <div class="offer-card" th:each="car : ${listOfSearchCars}">
-                <div class="offer-image">
-                    <img src="car.png" alt="Car image">
-                </div>
-                <div class="offer-content">
-                    <h3 th:text="${car.brand + ' ' + car.model}">Nazwa</h3>
-                    <p th:text="'Rok: ' + ${car.year} + ' Przebieg: ' + ${car.mileage} + ' km'">
-                        Dodatkowa informacja
-                    </p>
-                    <p class="price" th:text="${car.price + ' PLN'}">Cena</p>
+        <div th:if="${!#lists.isEmpty(listOfSearchCars)} and ${!noCriteria}" class="row g-4">
+            <div class="col-sm-6 col-lg-4" th:each="car : ${listOfSearchCars}">
+                <div class="card bg-black border border-secondary h-100 shadow-sm car-card">
+                    <div class="image-wrapper">
+                        <img th:src="@{/car.png}" alt="Car image" class="card-img-top">
+                        <a th:href="@{/car/{id}(id=${car.id}, from='/search')}" class="btn btn-primary btn-details">Szczegóły</a>
+                    </div>
+                    <div class="card-body">
+                        <h3 class="card-title text-light" th:text="${car.brand + ' ' + car.model}">Nazwa</h3>
+                        <p class="card-text text-secondary"
+                           th:text="'Rok: ' + ${car.year} + ' Przebieg: ' + ${car.mileage} + ' km'">Dodatkowa
+                            informacja</p>
+                        <p class="text-primary fw-semibold fs-5 mb-3" th:text="${car.price + ' PLN'}">Cena</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -133,14 +145,16 @@
         <div class="row g-4">
             <div class="col-sm-6 col-lg-4" th:each="car : ${listOfCars}">
                 <div class="card bg-black border border-secondary h-100 shadow-sm car-card">
-                    <img src="car.png" alt="Car image" class="card-img-top">
+                    <div class="image-wrapper">
+                        <img th:src="@{/car.png}" alt="Car image" class="card-img-top">
+                        <a th:href="@{/car/{id}(id=${car.id}, from='/search')}" class="btn btn-primary btn-details">Szczegóły</a>
+                    </div>
                     <div class="card-body">
                         <h3 class="card-title text-light" th:text="${car.brand + ' ' + car.model}">Nazwa</h3>
                         <p class="card-text text-secondary"
                            th:text="'Rok: ' + ${car.year} + ' Przebieg: ' + ${car.mileage} + ' km'">Dodatkowa
                             informacja</p>
                         <p class="text-primary fw-semibold fs-5 mb-3" th:text="${car.price + ' PLN'}">Cena</p>
-                        <button class="btn btn-primary w-100">Szczegóły</button>
                     </div>
                 </div>
             </div>

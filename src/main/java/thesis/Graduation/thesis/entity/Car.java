@@ -2,6 +2,9 @@ package thesis.Graduation.thesis.entity;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "cars")
 public class Car {
@@ -108,10 +111,22 @@ public class Car {
     @Column(name = "fuel_type", nullable = false)
     private FuelType fuelType;
 
+    @Column(name = "description")
+    private String description;
+
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     public Car() {
     }
 
-    public Car(String brand, String model, int year, double price, int mileage, BodyType bodyType, FuelType fuelType) {
+    public Car(String brand, String model, int year, double price, int mileage, BodyType bodyType, FuelType fuelType, String description) {
         this.brand = brand;
         this.model = model;
         this.year = year;
@@ -119,5 +134,14 @@ public class Car {
         this.mileage = mileage;
         this.bodyType = bodyType;
         this.fuelType = fuelType;
+        this.description = description;
     }
+
+    @ManyToMany
+    @JoinTable(
+            name = "car_dealership",
+            joinColumns = @JoinColumn(name = "car_id"),
+            inverseJoinColumns = @JoinColumn(name = "dealership_id")
+    )
+    private List<Dealership> dealerships = new ArrayList<>();
 }

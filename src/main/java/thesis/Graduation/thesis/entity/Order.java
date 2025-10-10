@@ -14,7 +14,7 @@ public class Order {
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
-    private User client; // тот, кто сделал заказ
+    private User client;
 
     @ManyToOne
     @JoinColumn(name = "car_id", nullable = false)

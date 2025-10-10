@@ -1,12 +1,15 @@
 package thesis.Graduation.thesis.service;
 
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import thesis.Graduation.thesis.entity.BodyType;
 import thesis.Graduation.thesis.entity.Car;
 import thesis.Graduation.thesis.entity.FuelType;
 import thesis.Graduation.thesis.repository.CarRepository;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class CarService {
@@ -39,6 +42,7 @@ public class CarService {
         car.setBodyType(updatedCar.getBodyType());
         car.setFuelType(updatedCar.getFuelType());
         car.setAvailable(updatedCar.isAvailable());
+        car.setDescription(updatedCar.getDescription());
         return carRepository.save(car);
     }
 
@@ -70,14 +74,36 @@ public class CarService {
                                     Integer mileageFrom,
                                     Integer mileageTo) {
 
+        brand = normalize(brand);
+        carModel = normalize(carModel);
+
         System.out.println("-> Search params: brand=" + brand + ", model=" + carModel
                 + ", body=" + bodyType + ", priceFrom=" + priceFrom + ", priceTo="
                 + priceTo + ", fuel=" + fuelType + ", year=" + year + ", mileageFrom="
                 + mileageFrom + ", mileageTo=" + mileageTo);
 
-        //TODO test price, mileage to normal value.
-
-        return carRepository.findSearchCars(
+        Specification<Car> spec = CarSpecification.search(
                 brand, carModel, bodyType, priceFrom, priceTo, fuelType, year, mileageFrom, mileageTo);
+
+        return carRepository.findAll(spec);
     }
+
+    private String normalize(String value) {
+        return (value == null || value.isBlank()) ? null : value;
+    }
+
+    public List<Car> randomCars(Integer count) {
+        List<Car> listOfCars = getAllCars();
+        Collections.shuffle(listOfCars);
+        return listOfCars.stream().limit(count).toList();
+    }
+
+    public List<Car> randomCars(Integer count, Long excludeId) {
+        List<Car> listOfCars = getAllCars().stream()
+                .filter(c -> !c.getId().equals(excludeId))
+                .collect(Collectors.toList());
+        Collections.shuffle(listOfCars);
+        return listOfCars.stream().limit(count).toList();
+    }
+
 }
