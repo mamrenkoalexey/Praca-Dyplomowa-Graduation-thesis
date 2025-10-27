@@ -22,4 +22,6 @@ public interface CarRepository extends JpaRepository<Car, Long>, JpaSpecificatio
 
     @Query("SELECT DISTINCT C.year FROM Car C ORDER BY C.year DESC")
     List<Integer> findAllYears();
+
+
 }

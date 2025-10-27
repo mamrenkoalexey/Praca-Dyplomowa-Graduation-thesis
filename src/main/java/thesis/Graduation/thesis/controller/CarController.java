@@ -36,7 +36,7 @@ public class CarController {
         System.out.println("Return URL: " + returnUrl);
 
         model.addAttribute("returnUrl", returnUrl != null ? returnUrl : "/");
-        return "car-details";
+        return "car-detail";
     }
 
     @GetMapping("/car/{id}/dealerships")
@@ -52,7 +52,8 @@ public class CarController {
 
         model.addAttribute("dealers", dealerships);
         model.addAttribute("returnUrl", returnUrl != null ? returnUrl : "/");
-        return "";
+        model.addAttribute("listOfCars", carService.randomCars(12, id));
+        return "car-dealership";
     }
 
 }

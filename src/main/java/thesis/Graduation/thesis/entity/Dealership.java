@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Table(name = "dealership")
 public class Dealership {
 
     @Id
@@ -24,6 +25,9 @@ public class Dealership {
 
     @ManyToMany(mappedBy = "dealerships")
     private List<Car> cars = new ArrayList<>();
+
+    public Dealership() {
+    }
 
     public Dealership(String name, String city, String address, String phone, String email) {
         this.name = name;

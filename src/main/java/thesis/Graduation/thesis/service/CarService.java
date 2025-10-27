@@ -77,10 +77,10 @@ public class CarService {
         brand = normalize(brand);
         carModel = normalize(carModel);
 
-        System.out.println("-> Search params: brand=" + brand + ", model=" + carModel
-                + ", body=" + bodyType + ", priceFrom=" + priceFrom + ", priceTo="
-                + priceTo + ", fuel=" + fuelType + ", year=" + year + ", mileageFrom="
-                + mileageFrom + ", mileageTo=" + mileageTo);
+//        System.out.println("-> Search params: brand=" + brand + ", model=" + carModel
+//                + ", body=" + bodyType + ", priceFrom=" + priceFrom + ", priceTo="
+//                + priceTo + ", fuel=" + fuelType + ", year=" + year + ", mileageFrom="
+//                + mileageFrom + ", mileageTo=" + mileageTo);
 
         Specification<Car> spec = CarSpecification.search(
                 brand, carModel, bodyType, priceFrom, priceTo, fuelType, year, mileageFrom, mileageTo);

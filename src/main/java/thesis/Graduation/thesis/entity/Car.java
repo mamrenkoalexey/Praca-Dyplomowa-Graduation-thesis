@@ -126,6 +126,14 @@ public class Car {
     public Car() {
     }
 
+    public List<Dealership> getDealerships() {
+        return dealerships;
+    }
+
+    public void setDealerships(List<Dealership> dealerships) {
+        this.dealerships = dealerships;
+    }
+
     public Car(String brand, String model, int year, double price, int mileage, BodyType bodyType, FuelType fuelType, String description) {
         this.brand = brand;
         this.model = model;
