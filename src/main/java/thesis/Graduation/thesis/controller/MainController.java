@@ -1,18 +1,16 @@
 package thesis.Graduation.thesis.controller;
 
-import jakarta.persistence.criteria.CriteriaBuilder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
-import thesis.Graduation.thesis.entity.BodyType;
 import thesis.Graduation.thesis.entity.Car;
-import thesis.Graduation.thesis.entity.FuelType;
+import thesis.Graduation.thesis.entity.enums.BodyType;
+import thesis.Graduation.thesis.entity.enums.FuelType;
+import thesis.Graduation.thesis.entity.enums.CarStatus;
 import thesis.Graduation.thesis.service.CarService;
 
 import java.util.List;
-
 
 @Controller
 public class MainController {
@@ -29,12 +27,12 @@ public class MainController {
         model.addAttribute("carModels", carService.getAllModels());
         model.addAttribute("bodyTypes", BodyType.values());
         model.addAttribute("fuelTypes", FuelType.values());
+        model.addAttribute("statuses", CarStatus.values());
         model.addAttribute("years", carService.getAllYears());
 
         model.addAttribute("randomCars", carService.randomCars(6));
         return "index";
     }
-
 
     @GetMapping("/search")
     public String search(@RequestParam(required = false) String brand,
@@ -43,9 +41,10 @@ public class MainController {
                          @RequestParam(required = false) Double priceFrom,
                          @RequestParam(required = false) Double priceTo,
                          @RequestParam(required = false) FuelType fuelType,
-                         @RequestParam(required = false) Integer year,
-                         @RequestParam(required = false) Integer mileageFrom,
-                         @RequestParam(required = false) Integer mileageTo,
+                         @RequestParam(required = false) Integer productionYear,
+                         @RequestParam(required = false) Double mileageFrom,
+                         @RequestParam(required = false) Double mileageTo,
+                         @RequestParam(required = false) CarStatus status,
                          Model model) {
 
         boolean noCriteria = (brand == null || brand.isBlank())
@@ -54,15 +53,17 @@ public class MainController {
                 && priceFrom == null
                 && priceTo == null
                 && fuelType == null
-                && year == null
+                && productionYear == null
                 && mileageFrom == null
-                && mileageTo == null;
+                && mileageTo == null
+                && status == null;
 
         model.addAttribute("noCriteria", noCriteria);
 
-
-        List<Car> listOfSearchCars = carService.findSearchCars(brand, carModel, bodyType, priceFrom, priceTo,
-                fuelType, year, mileageFrom, mileageTo);
+        List<Car> listOfSearchCars = carService.findSearchCars(
+                brand, carModel, bodyType, priceFrom, priceTo, fuelType,
+                productionYear, mileageFrom, mileageTo, status
+        );
 
         model.addAttribute("listOfSearchCars", listOfSearchCars);
 
@@ -81,17 +82,17 @@ public class MainController {
         model.addAttribute("fuelTypes", FuelType.values());
         model.addAttribute("selFuelType", fuelType);
 
+        model.addAttribute("statuses", CarStatus.values());
+        model.addAttribute("selStatus", status);
+
         model.addAttribute("years", carService.getAllYears());
-        model.addAttribute("selYear", year);
+        model.addAttribute("selYear", productionYear);
 
         model.addAttribute("mileageFrom", mileageFrom);
         model.addAttribute("mileageTo", mileageTo);
 
         model.addAttribute("listOfCars", carService.randomCars(12));
 
-
         return "search";
     }
 }
-
-

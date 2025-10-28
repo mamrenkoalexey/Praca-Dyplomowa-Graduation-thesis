@@ -1,20 +1,74 @@
 package thesis.Graduation.thesis.entity;
 
 import jakarta.persistence.*;
-
-import java.util.ArrayList;
-import java.util.List;
+import thesis.Graduation.thesis.entity.enums.BodyType;
+import thesis.Graduation.thesis.entity.enums.CarStatus;
+import thesis.Graduation.thesis.entity.enums.FuelType;
 
 @Entity
 @Table(name = "cars")
-public class Car {
+public class Car extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
-    private String brand;
+    private String vin;
+
+    @Column(nullable = false)
+    private String registrationNumber;
+
+    @Column(nullable = false)
+    private Integer productionYear;
+
+    @Column(nullable = false)
+    private Double mileage;
+
+    @Column(nullable = false)
+    private String color;
+
+    @Column(nullable = false)
+    private Double price;
+
+    @Enumerated(EnumType.STRING)
+    private BodyType bodyType;
+
+    @Enumerated(EnumType.STRING)
+    private FuelType fuelType;
+
+    @ManyToOne
+    @JoinColumn(name = "model_id")
+    private Model model;
+
+    @ManyToOne
+    @JoinColumn(name = "salon_id")
+    private Salon salon;
+
+    @Enumerated(EnumType.STRING)
+    private CarStatus status;
+
+    @Column(nullable = false)
+    private String description;
+
+    public Car() {
+    }
+
+    public Car(Long id, String vin, String registrationNumber, Integer productionYear, Double mileage, String color, Double price, BodyType bodyType, FuelType fuelType, Model model, Salon salon, CarStatus status, String description) {
+        this.id = id;
+        this.vin = vin;
+        this.registrationNumber = registrationNumber;
+        this.productionYear = productionYear;
+        this.mileage = mileage;
+        this.color = color;
+        this.price = price;
+        this.bodyType = bodyType;
+        this.fuelType = fuelType;
+        this.model = model;
+        this.salon = salon;
+        this.status = status;
+        this.description = description;
+    }
 
     public Long getId() {
         return id;
@@ -24,52 +78,52 @@ public class Car {
         this.id = id;
     }
 
-    public String getBrand() {
-        return brand;
+    public String getVin() {
+        return vin;
     }
 
-    public void setBrand(String brand) {
-        this.brand = brand;
+    public void setVin(String vin) {
+        this.vin = vin;
     }
 
-    public String getModel() {
-        return model;
+    public String getRegistrationNumber() {
+        return registrationNumber;
     }
 
-    public void setModel(String model) {
-        this.model = model;
+    public void setRegistrationNumber(String registrationNumber) {
+        this.registrationNumber = registrationNumber;
     }
 
-    public int getYear() {
-        return year;
+    public int getProductionYear() {
+        return productionYear;
     }
 
-    public void setYear(int year) {
-        this.year = year;
+    public void setProductionYear(Integer productionYear) {
+        this.productionYear = productionYear;
+    }
+
+    public double getMileage() {
+        return mileage;
+    }
+
+    public void setMileage(Double mileage) {
+        this.mileage = mileage;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
     }
 
     public double getPrice() {
         return price;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(Double price) {
         this.price = price;
-    }
-
-    public boolean isAvailable() {
-        return available;
-    }
-
-    public void setAvailable(boolean available) {
-        this.available = available;
-    }
-
-    public int getMileage() {
-        return mileage;
-    }
-
-    public void setMileage(int mileage) {
-        this.mileage = mileage;
     }
 
     public BodyType getBodyType() {
@@ -88,32 +142,29 @@ public class Car {
         this.fuelType = fuelType;
     }
 
-    @Column(nullable = false)
-    private String model;
+    public Model getModel() {
+        return model;
+    }
 
-    @Column(nullable = false)
-    private int year;
+    public void setModel(Model model) {
+        this.model = model;
+    }
 
-    @Column(nullable = false)
-    private double price;
+    public Salon getSalon() {
+        return salon;
+    }
 
-    @Column(nullable = false)
-    private boolean available = true;
+    public void setSalon(Salon salon) {
+        this.salon = salon;
+    }
 
-    @Column(nullable = false)
-    private int mileage;
+    public CarStatus getStatus() {
+        return status;
+    }
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "body_type", nullable = false)
-    private BodyType bodyType;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "fuel_type", nullable = false)
-    private FuelType fuelType;
-
-    @Column(name = "description")
-    private String description;
-
+    public void setStatus(CarStatus status) {
+        this.status = status;
+    }
 
     public String getDescription() {
         return description;
@@ -122,34 +173,4 @@ public class Car {
     public void setDescription(String description) {
         this.description = description;
     }
-
-    public Car() {
-    }
-
-    public List<Dealership> getDealerships() {
-        return dealerships;
-    }
-
-    public void setDealerships(List<Dealership> dealerships) {
-        this.dealerships = dealerships;
-    }
-
-    public Car(String brand, String model, int year, double price, int mileage, BodyType bodyType, FuelType fuelType, String description) {
-        this.brand = brand;
-        this.model = model;
-        this.year = year;
-        this.price = price;
-        this.mileage = mileage;
-        this.bodyType = bodyType;
-        this.fuelType = fuelType;
-        this.description = description;
-    }
-
-    @ManyToMany
-    @JoinTable(
-            name = "car_dealership",
-            joinColumns = @JoinColumn(name = "car_id"),
-            inverseJoinColumns = @JoinColumn(name = "dealership_id")
-    )
-    private List<Dealership> dealerships = new ArrayList<>();
 }

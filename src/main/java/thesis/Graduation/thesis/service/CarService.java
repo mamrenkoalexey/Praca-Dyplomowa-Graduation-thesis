@@ -2,9 +2,10 @@ package thesis.Graduation.thesis.service;
 
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-import thesis.Graduation.thesis.entity.BodyType;
 import thesis.Graduation.thesis.entity.Car;
-import thesis.Graduation.thesis.entity.FuelType;
+import thesis.Graduation.thesis.entity.enums.BodyType;
+import thesis.Graduation.thesis.entity.enums.FuelType;
+import thesis.Graduation.thesis.entity.enums.CarStatus;
 import thesis.Graduation.thesis.repository.CarRepository;
 
 import java.util.Collections;
@@ -13,11 +14,14 @@ import java.util.stream.Collectors;
 
 @Service
 public class CarService {
+
     private final CarRepository carRepository;
 
     public CarService(CarRepository carRepository) {
         this.carRepository = carRepository;
     }
+
+    // ======= CRUD =======
 
     public List<Car> getAllCars() {
         return carRepository.findAll();
@@ -25,7 +29,7 @@ public class CarService {
 
     public Car getCarById(Long id) {
         return carRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Car not found"));
+                .orElseThrow(() -> new RuntimeException("Car not found with id " + id));
     }
 
     public Car addCar(Car car) {
@@ -34,15 +38,20 @@ public class CarService {
 
     public Car updateCar(Long id, Car updatedCar) {
         Car car = getCarById(id);
-        car.setBrand(updatedCar.getBrand());
-        car.setModel(updatedCar.getModel());
-        car.setYear(updatedCar.getYear());
-        car.setPrice(updatedCar.getPrice());
+
+        car.setVin(updatedCar.getVin());
+        car.setRegistrationNumber(updatedCar.getRegistrationNumber());
+        car.setProductionYear(updatedCar.getProductionYear());
         car.setMileage(updatedCar.getMileage());
+        car.setColor(updatedCar.getColor());
+        car.setPrice(updatedCar.getPrice());
         car.setBodyType(updatedCar.getBodyType());
         car.setFuelType(updatedCar.getFuelType());
-        car.setAvailable(updatedCar.isAvailable());
+        car.setModel(updatedCar.getModel());
+        car.setSalon(updatedCar.getSalon());
+        car.setStatus(updatedCar.getStatus());
         car.setDescription(updatedCar.getDescription());
+
         return carRepository.save(car);
     }
 
@@ -51,39 +60,24 @@ public class CarService {
     }
 
 
-    public List<String> getAllBrands() {
-        return carRepository.findAllBrands();
-    }
-
-    public List<String> getAllModels() {
-        return carRepository.findAllModels();
-    }
-
-
-    public List<Integer> getAllYears() {
-        return carRepository.findAllYears();
-    }
-
     public List<Car> findSearchCars(String brand,
                                     String carModel,
                                     BodyType bodyType,
                                     Double priceFrom,
                                     Double priceTo,
                                     FuelType fuelType,
-                                    Integer year,
-                                    Integer mileageFrom,
-                                    Integer mileageTo) {
+                                    Integer productionYear,
+                                    Double mileageFrom,
+                                    Double mileageTo,
+                                    CarStatus status) {
 
         brand = normalize(brand);
         carModel = normalize(carModel);
 
-//        System.out.println("-> Search params: brand=" + brand + ", model=" + carModel
-//                + ", body=" + bodyType + ", priceFrom=" + priceFrom + ", priceTo="
-//                + priceTo + ", fuel=" + fuelType + ", year=" + year + ", mileageFrom="
-//                + mileageFrom + ", mileageTo=" + mileageTo);
-
         Specification<Car> spec = CarSpecification.search(
-                brand, carModel, bodyType, priceFrom, priceTo, fuelType, year, mileageFrom, mileageTo);
+                brand, carModel, bodyType, priceFrom, priceTo, fuelType,
+                productionYear, mileageFrom, mileageTo, status
+        );
 
         return carRepository.findAll(spec);
     }
@@ -91,6 +85,7 @@ public class CarService {
     private String normalize(String value) {
         return (value == null || value.isBlank()) ? null : value;
     }
+
 
     public List<Car> randomCars(Integer count) {
         List<Car> listOfCars = getAllCars();
@@ -106,4 +101,27 @@ public class CarService {
         return listOfCars.stream().limit(count).toList();
     }
 
+    public List<String> getAllBrands() {
+        return carRepository.findAll().stream()
+                .map(car -> car.getModel().getBrand().getName())
+                .distinct()
+                .sorted()
+                .toList();
+    }
+
+    public List<String> getAllModels() {
+        return carRepository.findAll().stream()
+                .map(car -> car.getModel().getName())
+                .distinct()
+                .sorted()
+                .toList();
+    }
+
+    public List<Integer> getAllYears() {
+        return carRepository.findAll().stream()
+                .map(Car::getProductionYear)
+                .distinct()
+                .sorted()
+                .toList();
+    }
 }

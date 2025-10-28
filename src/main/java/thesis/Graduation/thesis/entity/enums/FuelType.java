@@ -1,4 +1,4 @@
-package thesis.Graduation.thesis.entity;
+package thesis.Graduation.thesis.entity.enums;
 
 public enum FuelType {
     PETROL,
