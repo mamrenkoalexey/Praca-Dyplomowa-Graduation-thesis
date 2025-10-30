@@ -1,6 +1,7 @@
 package thesis.Graduation.thesis.entity;
 
 import jakarta.persistence.*;
+
 import java.time.LocalDate;
 import java.util.List;
 
@@ -36,8 +37,7 @@ public class Invoice extends BaseEntity {
     public Invoice() {
     }
 
-    public Invoice(Long id, String invoiceNumber, LocalDate invoiceDate, String invoiceName, String invoiceTaxNumber, Double totalAmount, Client client, List<Payment> payments) {
-        this.id = id;
+    public Invoice(String invoiceNumber, LocalDate invoiceDate, String invoiceName, String invoiceTaxNumber, Double totalAmount, Client client, List<Payment> payments) {
         this.invoiceNumber = invoiceNumber;
         this.invoiceDate = invoiceDate;
         this.invoiceName = invoiceName;

@@ -1,0 +1,3 @@
+INSERT INTO leases (contract_number, start_date, end_date, initial_payment, monthly_payment, notes, status, total_value, car_id, client_id, employee_id) VALUES
+('LEASE1001', '2023-01-01', '2024-01-01', 5000, 400, 'Standard lease', 'ACTIVE', 9800, (SELECT id FROM cars WHERE vin='VIN100001'), (SELECT id FROM clients WHERE email='jan.kowalski@example.com'), (SELECT id FROM employees WHERE login='adamn')),
+('LEASE1002', '2023-02-01', '2024-02-01', 6000, 450, 'Corporate lease', 'ACTIVE', 10800, (SELECT id FROM cars WHERE vin='VIN100005'), (SELECT id FROM clients WHERE email='firma@example.com'), (SELECT id FROM employees WHERE login='ewak'));

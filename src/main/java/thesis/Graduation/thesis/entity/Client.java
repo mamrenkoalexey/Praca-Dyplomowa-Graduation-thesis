@@ -57,8 +57,7 @@ public class Client extends BaseEntity {
     public Client() {
     }
 
-    public Client(Long id, String firstName, String lastName, String companyName, String taxNumber, TaxNumberType taxNumberType, String email, String login, String password, String phone, Boolean active, List<Lease> leases, List<Sale> sales, List<Rent> rents, List<Invoice> invoices) {
-        this.id = id;
+    public Client(String firstName, String lastName, String companyName, String taxNumber, TaxNumberType taxNumberType, String email, String login, String password, String phone, Boolean active, List<Lease> leases, List<Sale> sales, List<Rent> rents, List<Invoice> invoices) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.companyName = companyName;

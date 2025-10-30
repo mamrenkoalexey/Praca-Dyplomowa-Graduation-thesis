@@ -51,8 +51,7 @@ public class Payment extends BaseEntity {
     public Payment() {
     }
 
-    public Payment(Long id, LocalDate deuDate, LocalDate paymentDate, Double amount, PaymentMethod method, PaymentStatus status, Boolean active, Lease lease, Rent rent, Invoice invoice) {
-        this.id = id;
+    public Payment(LocalDate deuDate, LocalDate paymentDate, Double amount, PaymentMethod method, PaymentStatus status, Boolean active, Lease lease, Rent rent, Invoice invoice) {
         this.deuDate = deuDate;
         this.paymentDate = paymentDate;
         this.amount = amount;

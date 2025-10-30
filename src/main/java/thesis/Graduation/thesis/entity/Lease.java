@@ -55,7 +55,7 @@ public class Lease extends BaseEntity {
     public Lease() {
     }
 
-    public Lease(List<Payment> payments, Car car, Employee employee, Client client, String notes, LeaseStatus status, Double totalValue, Double monthlyPayment, Double initialPayment, LocalDate endDate, LocalDate startDate, String contractNumber, Long id) {
+    public Lease(List<Payment> payments, Car car, Employee employee, Client client, String notes, LeaseStatus status, Double totalValue, Double monthlyPayment, Double initialPayment, LocalDate endDate, LocalDate startDate, String contractNumber) {
         this.payments = payments;
         this.car = car;
         this.employee = employee;
@@ -68,7 +68,6 @@ public class Lease extends BaseEntity {
         this.endDate = endDate;
         this.startDate = startDate;
         this.contractNumber = contractNumber;
-        this.id = id;
     }
 
     public Long getId() {

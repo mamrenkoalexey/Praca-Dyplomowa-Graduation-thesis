@@ -62,8 +62,7 @@ public class Rent extends BaseEntity {
     public Rent() {
     }
 
-    public Rent(Long id, String rentNumber, LocalDate rentStart, LocalDate rentEnd, LocalDate actualReturnDate, Double dailyRate, Double totalAmount, Double deposit, RentStatus status, String notes, Boolean active, Client client, Employee employee, Car car, List<Payment> payments) {
-        this.id = id;
+    public Rent(String rentNumber, LocalDate rentStart, LocalDate rentEnd, LocalDate actualReturnDate, Double dailyRate, Double totalAmount, Double deposit, RentStatus status, String notes, Boolean active, Client client, Employee employee, Car car, List<Payment> payments) {
         this.rentNumber = rentNumber;
         this.rentStart = rentStart;
         this.rentEnd = rentEnd;

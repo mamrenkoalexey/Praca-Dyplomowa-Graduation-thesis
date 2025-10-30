@@ -43,8 +43,7 @@ public class Sale extends BaseEntity {
     public Sale() {
     }
 
-    public Sale(Long id, LocalDate saleDate, Double totalAmount, PaymentMethod paymentMethod, String notes, Client client, Employee employee, Car car, Payment payment) {
-        this.id = id;
+    public Sale(LocalDate saleDate, Double totalAmount, PaymentMethod paymentMethod, String notes, Client client, Employee employee, Car car, Payment payment) {
         this.saleDate = saleDate;
         this.totalAmount = totalAmount;
         this.paymentMethod = paymentMethod;

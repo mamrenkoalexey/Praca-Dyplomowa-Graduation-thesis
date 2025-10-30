@@ -1,0 +1,2 @@
+INSERT INTO rents (active, actual_return_date, daily_rate, deposit, notes, rent_end, rent_number, rent_start, status, total_amount, car_id, client_id, employee_id) VALUES
+(1, '2023-05-20', 150, 500, 'Weekend rental', '2023-05-20', 'RENT1001', '2023-05-18', 1, 800, (SELECT id FROM cars WHERE vin='VIN100001'), (SELECT id FROM clients WHERE email='martyna.kaczmarek@example.com'), (SELECT id FROM employees WHERE login='marekl'));

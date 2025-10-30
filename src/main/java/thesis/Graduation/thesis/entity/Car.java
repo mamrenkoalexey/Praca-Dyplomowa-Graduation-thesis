@@ -54,8 +54,7 @@ public class Car extends BaseEntity {
     public Car() {
     }
 
-    public Car(Long id, String vin, String registrationNumber, Integer productionYear, Double mileage, String color, Double price, BodyType bodyType, FuelType fuelType, Model model, Salon salon, CarStatus status, String description) {
-        this.id = id;
+    public Car(String vin, String registrationNumber, Integer productionYear, Double mileage, String color, Double price, BodyType bodyType, FuelType fuelType, Model model, Salon salon, CarStatus status, String description) {
         this.vin = vin;
         this.registrationNumber = registrationNumber;
         this.productionYear = productionYear;

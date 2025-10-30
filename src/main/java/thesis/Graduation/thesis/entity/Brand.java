@@ -2,12 +2,11 @@ package thesis.Graduation.thesis.entity;
 
 import jakarta.persistence.*;
 
-
 import java.util.List;
 
 @Entity
 @Table(name = "brands")
-public class Brand extends BaseEntity{
+public class Brand extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -23,8 +22,7 @@ public class Brand extends BaseEntity{
     @OneToMany(mappedBy = "brand", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Model> models;
 
-    public Brand(Long id, String name, String country, String logoURL, List<Model> models) {
-        this.id = id;
+    public Brand(String name, String country, String logoURL, List<Model> models) {
         this.name = name;
         this.country = country;
         this.logoURL = logoURL;

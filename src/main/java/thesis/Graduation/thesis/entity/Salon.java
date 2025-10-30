@@ -2,7 +2,6 @@ package thesis.Graduation.thesis.entity;
 
 import jakarta.persistence.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -52,8 +51,7 @@ public class Salon extends BaseEntity {
     public Salon() {
     }
 
-    public Salon(Long id, String name, String code, String phone, String email, String street, String buildingNumber, String apartmentNumber, String city, String country, boolean active, List<Employee> employees, List<Car> cars) {
-        this.id = id;
+    public Salon(String name, String code, String phone, String email, String street, String buildingNumber, String apartmentNumber, String city, String country, boolean active, List<Employee> employees, List<Car> cars) {
         this.name = name;
         this.code = code;
         this.phone = phone;

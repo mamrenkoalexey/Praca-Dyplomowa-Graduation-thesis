@@ -33,8 +33,8 @@ public class Model extends BaseEntity {
     public Model() {
     }
 
-    public Model(Long id, String name, String generation, Integer yearFrom, Integer yearTo, Brand brand, List<Car> cars) {
-        this.id = id;
+    public Model(String name, String generation, Integer yearFrom, Integer yearTo, Brand brand, List<Car> cars) {
+
         this.name = name;
         this.generation = generation;
         this.yearFrom = yearFrom;

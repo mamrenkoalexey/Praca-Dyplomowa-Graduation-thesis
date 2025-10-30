@@ -57,8 +57,7 @@ public class Employee extends BaseEntity {
     public Employee() {
     }
 
-    public Employee(Long id, String firstName, String lastName, Role role, String login, String password, String email, String phone, Salon salon, Double salary, Boolean active, List<Lease> leases, List<Rent> rents, List<Sale> sales) {
-        this.id = id;
+    public Employee(String firstName, String lastName, Role role, String login, String password, String email, String phone, Salon salon, Double salary, Boolean active, List<Lease> leases, List<Rent> rents, List<Sale> sales) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.role = role;
