@@ -20,72 +20,76 @@
         <form action="/search" method="get" class="row g-3 filter-form">
 
             <div class="col-md-4">
-                <select style="width:100%" class="select2-dark" name="brand">
+                <select id="carBrandSelect" class="select2-dark" style="width:100%" name="carBrand">
                     <option value="">Marka Pojazdu</option>
-                    <th:block th:each="brand : ${brands}">
-                        <option th:value="${brand}" th:text="${brand}"
-                                th:selected="${brand == selBrand}"></option>
+                    <th:block th:each="carBrand : ${carBrands}">
+                        <option th:value="${carBrand.id}" th:text="${carBrand.name}"
+                                th:selected="${carBrand == searchCarBrand}"></option>
                     </th:block>
                 </select>
             </div>
 
             <div class="col-md-4">
-                <select style="width:100%" class="select2-dark" name="carModel">
-                    <option value="">Model Pojadzu</option>
+                <select id="carModelSelect" class="select2-dark" style="width:100%" name="carModel"
+                        th:data-selected-model-id="${searchCarModel != null ? searchCarModel.id : ''}">
+                    <option value="">Model Pojazdu</option>
+
                     <th:block th:each="carModel : ${carModels}">
-                        <option th:value="${carModel}" th:text="${carModel}"
-                                th:selected="${carModel == selCarModel}"></option>
+                        <option th:value="${carModel.id}" th:text="${carModel.name}"
+                                th:selected="${searchCarModel != null and carModel.id == searchCarModel.id}"></option>
                     </th:block>
+
                 </select>
             </div>
 
             <div class="col-md-4">
-                <select style="width:100%" class="select2-dark" name="bodyType">
+                <select style="width:100%" class="select2-dark" name="carBodyType">
                     <option value="">Typ Nadwozia</option>
-                    <th:block th:each="body : ${bodyTypes}">
-                        <option th:value="${body}" th:text="${body}"
-                                th:selected="${body == selBodyType}"></option>
+                    <th:block th:each="carBodyType : ${carBodyTypes}">
+                        <option th:value="${carBodyType}" th:text="${carBodyType}"
+                                th:selected="${carBodyType == searchCarBodyType}"></option>
                     </th:block>
                 </select>
             </div>
 
             <div class="col-md-4">
-                <input th:value="${priceFrom}" type="number" name="priceFrom" class="input-dark"
+                <input th:value="${carPriceFrom}" type="number" name="carPriceFrom" class="input-dark"
                        placeholder="Cena od" min="5000">
             </div>
 
             <div class="col-md-4">
-                <input th:value="${priceTo}" type="number" name="priceTo" class="input-dark"
+                <input th:value="${carPriceTo}" type="number" name="carPriceTo" class="input-dark"
                        placeholder="Cena do" min="5001">
             </div>
 
             <div class="col-md-4">
-                <select style="width:100%" class="select2-dark" name="fuelType">
+                <select style="width:100%" class="select2-dark" name="carFuelType">
                     <option value="">Rodzaj paliwa</option>
-                    <th:block th:each="fuel : ${fuelTypes}">
-                        <option th:value="${fuel}" th:text="${fuel}"
-                                th:selected="${fuel == selFuelType}"></option>
+                    <th:block th:each="carFuelType : ${carFuelTypes}">
+                        <option th:value="${carFuelType}" th:text="${carFuelType}"
+                                th:selected="${carFuelType == searchCarFuelType}"></option>
                     </th:block>
                 </select>
             </div>
 
             <div class="col-md-4">
-                <select style="width:100%" class="select2-dark" name="year">
+                <select style="width:100%" class="select2-dark" name="carYear">
                     <option value="">Rok produkcji</option>
-                    <th:block th:each="year : ${years}">
-                        <option th:value="${year}" th:text="${year}" th:selected="${year == selYear}"></option>
+                    <th:block th:each="carYear : ${carYears}">
+                        <option th:value="${carYear}" th:text="${carYear}"
+                                th:selected="${carYear == searchCarYear}"></option>
                     </th:block>
                 </select>
             </div>
 
             <div class="col-md-4">
-                <input th:value="${mileageFrom}" type="number" name="mileageFrom" class="input-dark"
-                       placeholder="Przebieg od" min="1">
+                <input th:value="${carMileageFrom}" type="number" name="carMileageFrom" class="input-dark"
+                       placeholder="Przebieg od" min="10000">
             </div>
 
             <div class="col-md-4">
-                <input th:value="${mileageTo}" type="number" name="mileageTo" class="input-dark"
-                       placeholder="Przebieg do" min="2">
+                <input th:value="${carMileageTo}" type="number" name="carMileageTo" class="input-dark"
+                       placeholder="Przebieg do" min="10001">
             </div>
 
             <div class="col-md-12">
@@ -118,14 +122,19 @@
         <div th:if="${!#lists.isEmpty(listOfSearchCars)} and ${!noCriteria}" class="row g-4">
             <div class="col-sm-6 col-lg-4" th:each="car : ${listOfSearchCars}">
                 <div class="card bg-black border border-secondary h-100 shadow-sm car-card">
+                    <
                     <div class="image-wrapper">
                         <img th:src="@{/car.png}" alt="Car image" class="card-img-top">
-                        <a th:href="@{/car/{id}(id=${car.id}, from='/search')}" class="btn btn-primary btn-details">Szczegóły</a>
+                        <a th:href="@{/car/{id}(id=${car.id}, from='/')}"
+                           class="btn btn-primary btn-details">Szczegóły</a>
                     </div>
+
                     <div class="card-body">
-                        <h3 class="card-title text-light" th:text="${car.brand + ' ' + car.model}">Nazwa</h3>
+                        <h3 class="card-title text-light"
+                            th:text="${car.model.brand.name + ' ' + car.model.name}">Nazwa</h3>
                         <p class="card-text text-secondary"
-                           th:text="'Rok: ' + ${car.year} + ' Przebieg: ' + ${car.mileage} + ' km'">Dodatkowa
+                           th:text="'Rok: ' + ${car.productionYear} + ' Przebieg: ' + ${car.mileage} + ' km'">
+                            Dodatkowa
                             informacja</p>
                         <p class="text-primary fw-semibold fs-5 mb-3" th:text="${car.price + ' PLN'}">Cena</p>
                     </div>
@@ -143,18 +152,23 @@
 
     <section class="container py-5">
         <div class="row g-4">
-            <div class="col-sm-6 col-lg-4" th:each="car : ${listOfCars}">
+            <div class="col-sm-6 col-lg-4" th:each="randomCar : ${randomCars}">
                 <div class="card bg-black border border-secondary h-100 shadow-sm car-card">
+
                     <div class="image-wrapper">
                         <img th:src="@{/car.png}" alt="Car image" class="card-img-top">
-                        <a th:href="@{/car/{id}(id=${car.id}, from='/search')}" class="btn btn-primary btn-details">Szczegóły</a>
+                        <a th:href="@{/car/{id}(id=${randomCar.id}, from='/')}"
+                           class="btn btn-primary btn-details">Szczegóły</a>
                     </div>
+
                     <div class="card-body">
-                        <h3 class="card-title text-light" th:text="${car.brand + ' ' + car.model}">Nazwa</h3>
+                        <h3 class="card-title text-light"
+                            th:text="${randomCar.model.brand.name + ' ' + randomCar.model.name}">Nazwa</h3>
                         <p class="card-text text-secondary"
-                           th:text="'Rok: ' + ${car.year} + ' Przebieg: ' + ${car.mileage} + ' km'">Dodatkowa
+                           th:text="'Rok: ' + ${randomCar.productionYear} + ' Przebieg: ' + ${randomCar.mileage} + ' km'">
+                            Dodatkowa
                             informacja</p>
-                        <p class="text-primary fw-semibold fs-5 mb-3" th:text="${car.price + ' PLN'}">Cena</p>
+                        <p class="text-primary fw-semibold fs-5 mb-3" th:text="${randomCar.price + ' PLN'}">Cena</p>
                     </div>
                 </div>
             </div>

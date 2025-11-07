@@ -30,9 +30,9 @@ spring:
   web:
     resources:
       cache:
-        period: 0
+        period: 1d
       chain:
-        cache: false
+        cache: true
 
 #192.168.0.198:8080
 server:

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layout.html">
+<head>
+    <meta charset="UTF-8">
+    <title>Dodaj nowy model</title>
+</head>
+<body class="bg-dark text-light">
+
+<div layout:fragment="content" class="bg-gray-950 text-white font-sans">
+
+    <div class="container py-5">
+        <h2 class="text-center mb-4 text-primary">Dodaj nowy model</h2>
+
+        <form th:action="@{/manager/add-model}" th:object="${newModel}" method="post"
+              class="bg-secondary p-4 rounded-4 shadow-lg">
+
+
+            <div class="mb-3">
+                <label class="form-label text-light">Nazwa modelu</label>
+                <input type="text" class="form-control" th:field="*{name}" placeholder="Wpisz nazwę modelu" required>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label text-light">Marka</label>
+                <select class="form-select" th:field="*{brand}" required>
+                    <option value="" disabled selected>Wybierz markę</option>
+                    <option th:each="brand : ${brands}" th:value="${brand.id}" th:text="${brand.name}"></option>
+                </select>
+            </div>
+
+            <div class="text-center">
+                <button type="submit" class="btn btn-success btn-lg px-5">Zapisz</button>
+                <a th:href="${from}" class="btn btn-outline-light btn-lg px-5 ms-3">Powrót</a>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+</html>

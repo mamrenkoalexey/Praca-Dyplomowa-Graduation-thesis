@@ -1,34 +1,133 @@
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head th:fragment="select2-css">
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
 </head>
+<th:block th:fragment="select2-js">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
-<body th:fragment="select2-js">
-<script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        const selects = document.querySelectorAll('select.select2-dark');
+    <script>
 
-        selects.forEach(select => {
-            const name = select.getAttribute('name');
-            let placeholder = "Wybierz opcję";
-
-            switch (name) {
-                case 'brand': placeholder = 'Marka pojazdu'; break;
-                case 'carModel': placeholder = 'Model pojazdu'; break;
-                case 'bodyType': placeholder = 'Typ nadwozia'; break;
-                case 'fuelType': placeholder = 'Rodzaj paliwa'; break;
-                case 'year': placeholder = 'Rok produkcji'; break;
+        $.fn.select2.defaults.set('language', {
+            noResults: function () {
+                return "Brak wyników";
             }
+        });
 
-            $(select).select2({
+        $(function() {
+          const $brand = $('#carBrandSelect');
+          const $model = $('#carModelSelect');
+
+          if (!$brand.length || !$model.length) return;
+
+          let preSelectedModelId = $model.data('selected-model-id') || null;
+
+
+          $('select.select2-dark').each(function () {
+            const $this = $(this);
+            const name = $this.attr('name');
+            let placeholder = 'Wybierz opcję';
+            let minResults = 10;
+
+            if (name === 'carBrand') placeholder = 'Wybierz Markę pojazdu';
+            if (name === 'carModel') {
+                placeholder = 'Najpierw wybierz markę';
+                minResults = Infinity;
+            }
+            if (name === 'carBodyType') placeholder = 'Typ Nadwozia';
+            if (name === 'carFuelType') placeholder = 'Rodzaj paliwa';
+            if (name === 'carYear' || name === 'year') placeholder = 'Rok produkcji';
+
+            if (!$this.data('select2')) {
+              $this.select2({
                 placeholder: placeholder,
                 allowClear: true,
-                width: '100%'
+                width: '100%',
+                minimumResultsForSearch: minResults
+              });
+            }
+          });
+
+
+          function loadModels(brandId, restoreValue = null) {
+            $model.empty().trigger('change');
+            $model.html('<option value=""></option>');
+            $model.select2('destroy');
+
+            $model.select2({
+              placeholder: 'Ładowanie modeli...',
+              width: '100%',
+              allowClear: true,
+              minimumResultsForSearch: Infinity
             });
+
+            fetch(`/models?brand=${encodeURIComponent(brandId)}`)
+              .then(res => {
+                if (!res.ok) throw new Error('Błąd odpowiedzi serwera');
+                return res.json();
+              })
+              .then(models => {
+                $model.empty().append('<option value=""></option>');
+
+                let finalPlaceholder;
+                let finalMinResults;
+
+                if (!Array.isArray(models) || models.length === 0) {
+                  finalPlaceholder = 'Brak modeli dla tej marki';
+                  finalMinResults = Infinity;
+                } else {
+                  models.forEach(m => {
+                    $model.append(new Option(m.name, m.id));
+                  });
+                  finalPlaceholder = 'Wybierz Model Pojazdu';
+                  finalMinResults = 0;
+                }
+
+                $model.select2('destroy');
+                $model.select2({
+                  placeholder: finalPlaceholder,
+                  width: '100%',
+                  allowClear: true,
+                  minimumResultsForSearch: finalMinResults
+                });
+
+                if (restoreValue) {
+                  $model.val(restoreValue).trigger('change');
+                }
+              })
+              .catch(() => {
+                 $model.select2('destroy');
+                 $model.select2({
+                  placeholder: 'Błąd ładowania danych',
+                  width: '100%',
+                  allowClear: true,
+                  minimumResultsForSearch: Infinity
+                });
+              });
+          }
+
+          $brand.on('select2:select select2:clear', function() {
+            const brandId = $(this).val();
+            if (!brandId) {
+              $model.empty().val(null).trigger('change');
+              $model.select2('destroy');
+              $model.select2({
+                placeholder: 'Najpierw wybierz markę',
+                width: '100%',
+                allowClear: true,
+                minimumResultsForSearch: Infinity
+              });
+              return;
+            }
+            loadModels(brandId);
+          });
+
+          const initialBrandId = $brand.val();
+          if (initialBrandId) {
+            loadModels(initialBrandId, preSelectedModelId);
+          }
         });
-    });
-</script>
-</body>
+    </script>
+</th:block>
 </html>

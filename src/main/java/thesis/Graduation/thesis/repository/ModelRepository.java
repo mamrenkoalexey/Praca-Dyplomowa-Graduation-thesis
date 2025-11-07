@@ -6,4 +6,6 @@ import thesis.Graduation.thesis.entity.Model;
 
 @Repository
 public interface ModelRepository extends JpaRepository<Model, Long> {
+
+    String findByName(String name);
 }

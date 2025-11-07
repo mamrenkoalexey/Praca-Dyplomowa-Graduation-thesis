@@ -73,6 +73,10 @@ public class Employee extends BaseEntity {
         this.sales = sales;
     }
 
+    public Boolean getActive() {
+        return active;
+    }
+
     public Long getId() {
         return id;
     }

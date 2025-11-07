@@ -93,7 +93,7 @@ public class Car extends BaseEntity {
         this.registrationNumber = registrationNumber;
     }
 
-    public int getProductionYear() {
+    public Integer getProductionYear() {
         return productionYear;
     }
 
@@ -101,7 +101,7 @@ public class Car extends BaseEntity {
         this.productionYear = productionYear;
     }
 
-    public double getMileage() {
+    public Double getMileage() {
         return mileage;
     }
 
@@ -117,7 +117,7 @@ public class Car extends BaseEntity {
         this.color = color;
     }
 
-    public double getPrice() {
+    public Double getPrice() {
         return price;
     }
 

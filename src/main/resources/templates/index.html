@@ -4,68 +4,69 @@
       layout:decorate="layout.html">
 
 <head>
-    <title>Strona główna</title>
+    <title>FAST BUY CAR | Strona główna</title>
 </head>
 
 <body>
 <div layout:fragment="content" class="bg-gray-950 text-white font-sans">
 
     <section class="text-center py-3 bg-gradient-dark">
+
         <div class="container">
             <h2 class="display-5 fw-bold mb-3">Znajdź idealny samochód z Nami</h2>
             <p class="text-secondary mb-4">Przeglądaj, filtruj i porównuj samochody różnych marek</p>
         </div>
+
     </section>
 
     <section class="content py-5">
         <form action="/search" method="get" class="row g-3 filter-form">
 
             <div class="col-md-6">
-                <select name="brand" style="width:100%" class="select2-dark">
-                    <option value="">Marka Pojadzu</option>
-                    <th:block th:each="brand : ${brands}">
-                        <option th:value="${brand}" th:text="${brand}"></option>
+                <select id="carBrandSelect" class="select2-dark" name="carBrand">
+                    <option value="">Marka Pojazdu</option>
+                    <th:block th:each="carBrand : ${carBrands}">
+                        <option th:value="${carBrand.id}" th:text="${carBrand.name}"></option>
                     </th:block>
                 </select>
             </div>
 
             <div class="col-md-6">
-                <select class="select2-dark" name="carModel" style="width:100%">
-                    <option value="">Model Pojadzu</option>
-                    <th:block th:each="carModel : ${carModels}">
-                        <option th:value="${carModel}" th:text="${carModel}"></option>
-                    </th:block>
+                <select id="carModelSelect" class="select2-dark" name="carModel"
+                        th:data-selected-model-id="${searchCarModel != null ? searchCarModel.id : ''}">
+                    <option value="">Model Pojazdu</option>
                 </select>
             </div>
 
+
             <div class="col-md-6">
-                <select class="select2-dark" name="bodyType" style="width:100%">
+                <select class="select2-dark" name="carBodyType" style="width:100%">
                     <option value="">Typ Nadwozia</option>
-                    <th:block th:each="body : ${bodyTypes}">
-                        <option th:value="${body}" th:text="${body}"></option>
+                    <th:block th:each="carBodyType : ${carBodyTypes}">
+                        <option th:value="${carBodyType}" th:text="${carBodyType}"></option>
                     </th:block>
                 </select>
             </div>
 
             <div class="col-md-6">
-                <input th:value="${price}" type="number" name="priceFrom" class="input-dark"
+                <input th:value="${carPriceFrom}" type="number" name="carPriceFrom" class="input-dark"
                        placeholder="Cena od" min="5000">
             </div>
 
             <div class="col-md-6">
-                <select class="select2-dark" name="fuelType" style="width:100%">
+                <select class="select2-dark" name="carFuelType" style="width:100%">
                     <option value="">Rodzaj paliwa</option>
-                    <th:block th:each="fuel : ${fuelTypes}">
-                        <option th:value="${fuel}" th:text="${fuel}"></option>
+                    <th:block th:each="carFuelType : ${carFuelTypes}">
+                        <option th:value="${carFuelType}" th:text="${carFuelType}"></option>
                     </th:block>
                 </select>
             </div>
 
             <div class="col-md-6">
-                <select class="select2-dark" name="year" style="width:100%">
+                <select class="select2-dark" name="carYear"  style="width:100%">
                     <option value="">Rok produkcji</option>
-                    <th:block th:each="year : ${years}">
-                        <option th:value="${year}" th:text="${year}"></option>
+                    <th:block th:each="carYear : ${carYears}">
+                        <option th:value="${carYear}" th:text="${carYear}"></option>
                     </th:block>
                 </select>
             </div>
@@ -75,34 +76,35 @@
                     Wyszukaj
                 </button>
             </div>
+
         </form>
     </section>
 
     <section class="container pb-5">
         <div class="row g-4">
-            <div class="col-sm-6 col-lg-4" th:each="car : ${randomCars}">
+            <div class="col-sm-6 col-lg-4" th:each="randomCar : ${randomCars}">
                 <div class="card bg-black border border-secondary h-100 shadow-sm car-card">
+
                     <div class="image-wrapper">
                         <img th:src="@{/car.png}" alt="Car image" class="card-img-top">
-                        <a th:href="@{/car/{id}(id=${car.id}, from='/')}"
+                        <a th:href="@{/car/{id}(id=${randomCar.id}, from='/')}"
                            class="btn btn-primary btn-details">Szczegóły</a>
-
                     </div>
+
                     <div class="card-body">
-                        <h3 class="card-title text-light" th:text="${car.brand + ' ' + car.model}">Nazwa</h3>
+                        <h3 class="card-title text-light"
+                            th:text="${randomCar.model.brand.name + ' ' + randomCar.model.name}">Nazwa</h3>
                         <p class="card-text text-secondary"
-                           th:text="'Rok: ' + ${car.year} + ' Przebieg: ' + ${car.mileage} + ' km'">Dodatkowa
+                           th:text="'Rok: ' + ${randomCar.productionYear} + ' Przebieg: ' + ${randomCar.mileage} + ' km'">
+                            Dodatkowa
                             informacja</p>
-                        <p class="text-primary fw-semibold fs-5 mb-3" th:text="${car.price + ' PLN'}">Cena</p>
-
+                        <p class="text-primary fw-semibold fs-5 mb-3" th:text="${randomCar.price + ' PLN'}">Cena</p>
                     </div>
+
                 </div>
             </div>
         </div>
     </section>
 </div>
-
-<th:insert fragment="~{fragments/select2 :: select2-js}"/>
-
 </body>
 </html>

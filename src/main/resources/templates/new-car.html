@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layout.html">
+<head>
+    <meta charset="UTF-8">
+    <title>Dodaj nowy samochód</title>
+</head>
+<body class="bg-dark text-light">
+
+<div layout:fragment="content" class="bg-gray-950 text-white font-sans">
+
+    <div class="container py-5">
+        <h2 class="text-center mb-4 text-primary">Dodaj nowy samochód</h2>
+
+        <form th:action="@{/manager/add}" th:object="${newCar}" method="post"
+              class="bg-secondary p-4 rounded-4 shadow-lg">
+
+
+            <div class="mb-3">
+                <label class="form-label text-light">Model samochodu</label>
+                <select class="form-select" th:field="*{model}" required>
+                    <option value="" disabled selected>Wybierz model</option>
+                    <option th:each="model : ${models}"
+                            th:value="${model.id}"
+                            th:text="${model.name + ' (' + model.brand.name + ')'}">
+                    </option>
+                </select>
+
+
+                <a th:href="@{/manager/add-model(from=${returnUrl})}"
+                   class="btn btn-primary btn-details mt-2">Dodaj nowy model</a>
+            </div>
+
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label text-light">Typ nadwozia</label>
+                    <select class="form-select" th:field="*{bodyType}" required>
+                        <option value="" disabled selected>Wybierz typ</option>
+                        <option th:each="type : ${carBodyTypes}" th:value="${type}" th:text="${type}"></option>
+                    </select>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label text-light">Rodzaj paliwa</label>
+                    <select class="form-select" th:field="*{fuelType}" required>
+                        <option value="" disabled selected>Wybierz paliwo</option>
+                        <option th:each="fuel : ${carFuelTypes}" th:value="${fuel}" th:text="${fuel}"></option>
+                    </select>
+                </div>
+            </div>
+
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label text-light">Rok produkcji</label>
+                    <select class="form-select" th:field="*{productionYear}" required>
+                        <option value="" disabled selected>Wybierz rok</option>
+                        <option th:each="year : ${carYears}" th:value="${year}" th:text="${year}"></option>
+                    </select>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label text-light">Kolor</label>
+                    <input type="text" class="form-control" th:field="*{color}" placeholder="Kolor samochodu">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label text-light">Cena</label>
+                    <input type="number" step="0.01" class="form-control" th:field="*{price}" placeholder="Cena w PLN">
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label text-light">Przebieg (km)</label>
+                    <input type="number" class="form-control" th:field="*{mileage}" placeholder="np. 15000">
+                </div>
+            </div>
+
+
+            <div class="mb-3">
+                <label class="form-label text-light">Numer VIN</label>
+                <input type="text" class="form-control" th:field="*{vin}" placeholder="Wpisz numer VIN">
+            </div>
+            <div class="mb-3">
+                <label class="form-label text-light">Numer rejestracyjny</label>
+                <input type="text" class="form-control" th:field="*{registrationNumber}"
+                       placeholder="Wpisz numer rejestracyjny">
+            </div>
+
+
+            <div class="mb-3">
+                <label class="form-label text-light">Opis samochodu</label>
+                <textarea class="form-control" rows="3" th:field="*{description}"
+                          placeholder="Krótki opis samochodu"></textarea>
+            </div>
+
+
+            <div class="mb-3">
+                <label class="form-label text-light">Salon</label>
+                <select class="form-select" th:field="*{salon}" required>
+                    <option value="" disabled selected>Wybierz salon</option>
+                    <option th:each="salon : ${salons}" th:value="${salon.id}" th:text="${salon.name}"></option>
+                </select>
+            </div>
+
+
+            <div class="text-center">
+                <button type="submit" class="btn btn-success btn-lg px-5">Zapisz</button>
+                <a th:href="${returnUrl}" class="btn btn-outline-light btn-lg px-5 ms-3">Powrót</a>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+</html>

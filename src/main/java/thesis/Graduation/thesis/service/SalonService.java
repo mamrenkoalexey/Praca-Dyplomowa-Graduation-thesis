@@ -31,7 +31,6 @@ public class SalonService {
     }
 
     public Salon saveSalon(Salon salon) {
-        // Проверка обязательных полей
         if (salon.getName() == null || salon.getCode() == null || salon.getPhone() == null ||
                 salon.getEmail() == null || salon.getStreet() == null || salon.getBuildingNumber() == null ||
                 salon.getApartmentNumber() == null || salon.getCity() == null || salon.getCountry() == null) {

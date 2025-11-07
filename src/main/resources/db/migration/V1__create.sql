@@ -85,7 +85,7 @@ CREATE TABLE `employees` (
   `login` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL,
   `phone` varchar(255) NOT NULL,
-  `role` enum('DIRECTOR','MANAGER','SALER') DEFAULT NULL,
+  `role` enum('DIRECTOR','MANAGER','SELLER') DEFAULT NULL,
   `salary` double NOT NULL,
   `salon_id` bigint DEFAULT NULL,
   PRIMARY KEY (`id`),

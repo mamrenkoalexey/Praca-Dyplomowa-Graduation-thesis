@@ -3,8 +3,7 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="layout.html">
 <head>
-    <title th:text="${car.brand + ' ' + car.model}">Szczegóły samochodu</title>
-
+    <title th:text="${car.model.brand.name + ' ' + car.model.name}"> | Szczegóły samochodu</title>
 </head>
 <body>
 <div layout:fragment="content" class="bg-gray-950 text-white font-sans">
@@ -16,10 +15,11 @@
                 <a th:href="${returnUrl}" class="btn btn-primary btn-details">Powrót</a>
             </div>
 
-            <h2 class="text-center text-primary mb-3" th:text="${car.brand + ' ' + car.model}">Marka i model</h2>
+            <h2 class="text-center text-primary mb-3" th:text="${car.model.brand.name + ' ' + car.model.name}">Marka i
+                model</h2>
 
             <div class="card-title text-light">
-                <p><strong>Rok produkcji:</strong> <span th:text="${car.year}"></span></p>
+                <p><strong>Rok produkcji:</strong> <span th:text="${car.productionYear}"></span></p>
                 <p><strong>Przebieg:</strong> <span th:text="${car.mileage} + ' km'"></span></p>
                 <p><strong>Paliwo:</strong> <span th:text="${car.fuelType}"></span></p>
                 <p><strong>Typ nadwozia:</strong> <span th:text="${car.bodyType}"></span></p>
@@ -39,26 +39,27 @@
 
                 <h3 class="text-lg font-medium text-white mb-3 text-center">Dostępne w salonach</h3>
                 <div class="text-center mt-4">
-                    <div th:if="${#lists.isEmpty(dealers)}">
+                    <div th:if="${#lists.isEmpty(salons)}">
                         <div class="info-content">
                             <p style="color: red; text-align: center">
                                 Nie ma samochodow w salonach.
                             </p>
                         </div>
                     </div>
-                    <div th:if="${!#lists.isEmpty(dealers)}" class="row g-4">
-                        <div class="col-sm-6 col-lg-4" th:each="dealer : ${dealers}">
+                    <div th:if="${!#lists.isEmpty(salons)}" class="row g-4">
+                        <div class="col-sm-6 col-lg-4" th:each="salon : ${salons}">
                             <div class="card bg-black border border-secondary h-100 shadow-sm car-card">
                                 <div class="image-wrapper">
                                     <img th:src="@{/car.png}" alt="Car image" class="card-img-top">
-                                    <a th:href="@{/dealer/{id}(id=${dealer.id}, from=${'/car/' + car.id})}"
+                                    <a th:href="@{/salon/{id}(id=${salon.id}, from=${'/car/' + car.id})}"
                                        class="btn btn-primary btn-details">Szczegóły</a>
                                 </div>
                                 <div class="card-body">
-                                    <h3 class="card-title text-light" th:text="${dealer.name}">
+                                    <h3 class="card-title text-light" th:text="${salon.name}">
                                         Nazwa</h3>
                                     <p class="card-text text-secondary"
-                                       th:text="'Miasto: ' + ${dealer.city} + ' Adres: ' + ${dealer.address}">
+                                       th:text="'Miasto: ' + ${salon.city} + ' Adres: ' + ${salon.street}
+                                       + ' ' + ${salon.buildingNumber} + '/' + ${salon.apartmentNumber}">
                                         Dodatkowa informacja</p>
                                 </div>
                             </div>
@@ -81,24 +82,27 @@
         </div>
     </section>
 
-    <section class="container py-5">
+    <section class="container pb-5">
         <div class="row g-4">
-            <div class="col-sm-6 col-lg-4" th:each="nextCar : ${listOfCars}">
+            <div class="col-sm-6 col-lg-4" th:each="randomCar : ${randomCars}">
                 <div class="card bg-black border border-secondary h-100 shadow-sm car-card">
+
                     <div class="image-wrapper">
                         <img th:src="@{/car.png}" alt="Car image" class="card-img-top">
-                        <a th:href="@{/car/{id}(id=${nextCar.id}, from=${'/car/' + car.id})}"
+                        <a th:href="@{/car/{id}(id=${randomCar.id}, from='/')}"
                            class="btn btn-primary btn-details">Szczegóły</a>
+                    </div>
 
-                    </div>
                     <div class="card-body">
-                        <h3 class="card-title text-light" th:text="${nextCar.brand + ' ' + nextCar.model}">Nazwa</h3>
+                        <h3 class="card-title text-light"
+                            th:text="${randomCar.model.brand.name + ' ' + randomCar.model.name}">Nazwa</h3>
                         <p class="card-text text-secondary"
-                           th:text="'Rok: ' + ${nextCar.year} + ' Przebieg: ' + ${nextCar.mileage} + ' km'">
-                            Dodatkowa informacja
-                        </p>
-                        <p class="text-primary fw-semibold fs-5 mb-3" th:text="${nextCar.price + ' PLN'}">Cena</p>
+                           th:text="'Rok: ' + ${randomCar.productionYear} + ' Przebieg: ' + ${randomCar.mileage} + ' km'">
+                            Dodatkowa
+                            informacja</p>
+                        <p class="text-primary fw-semibold fs-5 mb-3" th:text="${randomCar.price + ' PLN'}">Cena</p>
                     </div>
+
                 </div>
             </div>
         </div>
