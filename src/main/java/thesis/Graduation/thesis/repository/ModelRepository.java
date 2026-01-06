@@ -8,4 +8,5 @@ import thesis.Graduation.thesis.entity.Model;
 public interface ModelRepository extends JpaRepository<Model, Long> {
 
     String findByName(String name);
+    boolean existsByNameIgnoreCaseAndBrandId(String name, Long brandId);
 }

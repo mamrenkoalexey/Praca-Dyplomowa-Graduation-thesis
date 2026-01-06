@@ -48,13 +48,24 @@ public class Car extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private CarStatus status;
 
-    @Column(nullable = false)
+    @Column(name = "car_image")
+    private String carImage;
+
     private String description;
 
     public Car() {
+        this.carImage = carImage;
     }
 
-    public Car(String vin, String registrationNumber, Integer productionYear, Double mileage, String color, Double price, BodyType bodyType, FuelType fuelType, Model model, Salon salon, CarStatus status, String description) {
+    public String getCarImage() {
+        return carImage;
+    }
+
+    public void setCarImage(String carImage) {
+        this.carImage = carImage;
+    }
+
+    public Car(String vin, String registrationNumber, Integer productionYear, Double mileage, String color, Double price, BodyType bodyType, FuelType fuelType, Model model, Salon salon, CarStatus status, String carImage, String description) {
         this.vin = vin;
         this.registrationNumber = registrationNumber;
         this.productionYear = productionYear;
@@ -66,6 +77,7 @@ public class Car extends BaseEntity {
         this.model = model;
         this.salon = salon;
         this.status = status;
+        this.carImage = carImage;
         this.description = description;
     }
 

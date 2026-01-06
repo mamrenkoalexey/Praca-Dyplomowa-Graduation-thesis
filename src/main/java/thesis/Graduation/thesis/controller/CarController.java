@@ -49,7 +49,6 @@ public class CarController {
         model.addAttribute("car", car);
 
         List<Salon> salons = salonService.getSalonsForCar(id);
-
         model.addAttribute("salons", salons);
         model.addAttribute("returnUrl", returnUrl != null ? returnUrl : "/");
         model.addAttribute("randomCars", carService.randomCars(12, id));

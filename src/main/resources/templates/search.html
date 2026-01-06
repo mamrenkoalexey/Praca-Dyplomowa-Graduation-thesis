@@ -122,10 +122,11 @@
         <div th:if="${!#lists.isEmpty(listOfSearchCars)} and ${!noCriteria}" class="row g-4">
             <div class="col-sm-6 col-lg-4" th:each="car : ${listOfSearchCars}">
                 <div class="card bg-black border border-secondary h-100 shadow-sm car-card">
-                    <
                     <div class="image-wrapper">
-                        <img th:src="@{/car.png}" alt="Car image" class="card-img-top">
-                        <a th:href="@{/car/{id}(id=${car.id}, from='/')}"
+                        <img th:src="@{/cars/{img}(img=${randomCar.carImage ?: 'default.png'})}"
+                             class="img-fluid rounded shadow"
+                             style="width: 100%; height: 220px; object-fit: cover;">
+                        <a th:href="@{/car/{id}(id=${randomCar.id}, from='/')}"
                            class="btn btn-primary btn-details">Szczegóły</a>
                     </div>
 
@@ -156,7 +157,9 @@
                 <div class="card bg-black border border-secondary h-100 shadow-sm car-card">
 
                     <div class="image-wrapper">
-                        <img th:src="@{/car.png}" alt="Car image" class="card-img-top">
+                        <img th:src="@{/cars/{img}(img=${randomCar.carImage ?: 'default.png'})}"
+                             class="img-fluid rounded shadow"
+                             style="width: 100%; height: 220px; object-fit: cover;">
                         <a th:href="@{/car/{id}(id=${randomCar.id}, from='/')}"
                            class="btn btn-primary btn-details">Szczegóły</a>
                     </div>

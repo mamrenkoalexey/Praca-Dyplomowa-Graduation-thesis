@@ -6,4 +6,5 @@ import thesis.Graduation.thesis.entity.Brand;
 
 @Repository
 public interface BrandRepository extends JpaRepository<Brand, Long> {
+    boolean existsByNameIgnoreCase(String name);
 }

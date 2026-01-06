@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layout.html">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Zarządzaj samochodami</title>
+</head>
+<body>
+<div layout:fragment="content" class="bg-gray-950 text-white font-sans">
+    <section class="container pb-5">
+        <div class="d-flex justify-content-between align-items-center py-4">
+            <h1 class="text-light">Zarządzaj Samochodami</h1>
+            <a th:href="@{/manager/add-car}" class="btn btn-success btn-lg">
+                + Dodaj nowy samochod
+            </a>
+        </div>
+        <div class="row g-4">
+
+            <div class="col-sm-6 col-lg-4" th:each="car : ${cars}">
+                <div class="card bg-black border border-secondary h-100 shadow-sm car-card">
+
+                    <div class="image-wrapper">
+                        <img th:src="@{/cars/{img}(img=${car.carImage ?: 'default.png'})}"
+                             class="img-fluid rounded shadow"
+                             style="width: 100%; height: 220px; object-fit: cover;">
+                        <a th:href="@{/manager/update/car/{id}(id=${car.id})}"
+                           class="btn btn-primary btn-details">Wprowadź zmiany</a>
+                    </div>
+
+                    <div class="card-body">
+                        <h3 class="card-title text-light"
+                            th:text="${car.model.brand.name + ' ' + car.model.name}">Nazwa</h3>
+                        <p class="card-text text-secondary"
+                           th:text="'Rok: ' + ${car.productionYear} + ' Przebieg: ' + ${car.mileage} + ' km'">
+                            Dodatkowa
+                            informacja</p>
+                        <p class="text-primary fw-semibold fs-5 mb-3" th:text="${car.price + ' PLN'}">Cena</p>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+</div>
+</body>
+</html>

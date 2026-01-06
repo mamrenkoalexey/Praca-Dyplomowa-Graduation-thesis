@@ -13,12 +13,18 @@
     <div class="container py-5">
         <h2 class="text-center mb-4 text-primary">Dodaj nowy samochód</h2>
 
-        <form th:action="@{/manager/add}" th:object="${newCar}" method="post"
+        <form th:action="@{/manager/add-car}" th:object="${newCar}" method="post"
               class="bg-secondary p-4 rounded-4 shadow-lg">
 
-
             <div class="mb-3">
-                <label class="form-label text-light">Model samochodu</label>
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <label class="form-label text-light mb-0" style="font-size: 0.95rem;">Model samochodu</label>
+                    <a th:href="@{/manager/add-model}"
+                       class="btn btn-sm btn-primary shadow-sm"
+                       style="font-weight: 500;">
+                        + Dodaj nowy model
+                    </a>
+                </div>
                 <select class="form-select" th:field="*{model}" required>
                     <option value="" disabled selected>Wybierz model</option>
                     <option th:each="model : ${models}"
@@ -26,12 +32,7 @@
                             th:text="${model.name + ' (' + model.brand.name + ')'}">
                     </option>
                 </select>
-
-
-                <a th:href="@{/manager/add-model(from=${returnUrl})}"
-                   class="btn btn-primary btn-details mt-2">Dodaj nowy model</a>
             </div>
-
 
             <div class="row">
                 <div class="col-md-6 mb-3">
@@ -61,38 +62,37 @@
                 </div>
                 <div class="col-md-6 mb-3">
                     <label class="form-label text-light">Kolor</label>
-                    <input type="text" class="form-control" th:field="*{color}" placeholder="Kolor samochodu">
+                    <input type="text" class="form-control" th:field="*{color}" placeholder="Kolor samochodu" required>
                 </div>
             </div>
+
             <div class="row">
                 <div class="col-md-6 mb-3">
                     <label class="form-label text-light">Cena</label>
-                    <input type="number" step="0.01" class="form-control" th:field="*{price}" placeholder="Cena w PLN">
+                    <input type="number" step="0.01" class="form-control" th:field="*{price}" placeholder="Cena w PLN"
+                           required>
                 </div>
                 <div class="col-md-6 mb-3">
                     <label class="form-label text-light">Przebieg (km)</label>
-                    <input type="number" class="form-control" th:field="*{mileage}" placeholder="np. 15000">
+                    <input type="number" class="form-control" th:field="*{mileage}" placeholder="np. 15000" required>
                 </div>
             </div>
 
-
             <div class="mb-3">
                 <label class="form-label text-light">Numer VIN</label>
-                <input type="text" class="form-control" th:field="*{vin}" placeholder="Wpisz numer VIN">
+                <input type="text" class="form-control" th:field="*{vin}" placeholder="Wpisz numer VIN" required>
             </div>
             <div class="mb-3">
                 <label class="form-label text-light">Numer rejestracyjny</label>
                 <input type="text" class="form-control" th:field="*{registrationNumber}"
-                       placeholder="Wpisz numer rejestracyjny">
+                       placeholder="Wpisz numer rejestracyjny" required>
             </div>
-
 
             <div class="mb-3">
                 <label class="form-label text-light">Opis samochodu</label>
                 <textarea class="form-control" rows="3" th:field="*{description}"
                           placeholder="Krótki opis samochodu"></textarea>
             </div>
-
 
             <div class="mb-3">
                 <label class="form-label text-light">Salon</label>
@@ -102,13 +102,14 @@
                 </select>
             </div>
 
-
             <div class="text-center">
                 <button type="submit" class="btn btn-success btn-lg px-5">Zapisz</button>
-                <a th:href="${returnUrl}" class="btn btn-outline-light btn-lg px-5 ms-3">Powrót</a>
+                <a href="#" onclick="goBack()" class="btn btn-outline-light btn-lg px-5 ms-3">Powrót</a>
             </div>
+
         </form>
     </div>
 </div>
+
 </body>
 </html>

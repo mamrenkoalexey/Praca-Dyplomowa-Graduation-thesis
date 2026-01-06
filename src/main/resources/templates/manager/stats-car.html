@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layout.html">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Zarządzaj samochodami</title>
+</head>
+
+<body class="bg-dark text-light">
+
+<div layout:fragment="content" class="bg-gray-950 text-white font-sans">
+    <div class="container py-5">
+
+        <h2 class="text-center mb-4 text-primary fw-bold">Zarządzaj samochodami</h2>
+
+        <div class="row text-center mb-5">
+            <div class="col-md-4 mb-3">
+                <a th:href="@{/manager/list-cars}" class="text-decoration-none">
+                    <div class="card bg-secondary text-light shadow hoverable">
+                        <div class="card-body text-center">
+                            <h5 class="card-title text-uppercase">Samochody</h5>
+                            <p class="display-6 fw-bold text-info" th:text="${totalCars}">0</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <div class="col-md-4 mb-3">
+                <a th:href="@{/manager/list-models}" class="text-decoration-none">
+                    <div class="card bg-secondary text-light shadow">
+                        <div class="card-body">
+                            <h5 class="card-title text-uppercase">Modele</h5>
+                            <p class="display-6 fw-bold text-info" th:text="${totalModels}">0</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+
+            <div class="col-md-4 mb-3">
+                <a th:href="@{/manager/list-brands}" class="text-decoration-none">
+                    <div class="card bg-secondary text-light shadow">
+                        <div class="card-body">
+                            <h5 class="card-title text-uppercase">Marki</h5>
+                            <p class="display-6 fw-bold text-info" th:text="${totalBrands}">0</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+
+        </div>
+
+        <div class="text-center">
+            <h4 class="text-light mb-4">Działania</h4>
+            <div class="d-flex flex-wrap justify-content-center gap-3">
+                <a th:href="@{/manager/add-car}" class="btn btn-primary btn-lg shadow">+ Dodaj samochód</a>
+                <a th:href="@{/manager/add-model}" class="btn btn-primary btn-lg shadow">+ Dodaj model</a>
+                <a th:href="@{/manager/add-brand}" class="btn btn-primary btn-lg shadow">+ Dodaj markę</a>
+            </div>
+        </div>
+
+    </div>
+</div>
+</body>
+</html>

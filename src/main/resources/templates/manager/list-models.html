@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layout.html">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Zarządzaj modelami</title>
+</head>
+<body>
+<div layout:fragment="content" class="bg-gray-950 text-white font-sans">
+    <section class="container pb-5">
+        <div class="d-flex justify-content-between align-items-center py-4">
+            <h1 class="text-light">Zarządzaj modelami</h1>
+            <a th:href="@{/manager/add-model}" class="btn btn-success btn-lg">
+                + Dodaj nowy model
+            </a>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-sm-6 col-lg-4" th:each="model : ${models}">
+                <div class="card bg-black border border-secondary h-100 shadow-sm car-card">
+
+                    <div class="image-wrapper">
+                        <img th:src="@{/model.png}" alt="Model image" class="card-img-top">
+                        <a th:href="@{/manager/update/model/{id}(id=${model.id})}"
+                           class="btn btn-primary btn-details">Wprowadź zmiany</a>
+                    </div>
+
+                    <div class="card-body">
+                        <h3 class="card-title text-light"
+                            th:text="${model.brand.name + ' ' + model.name}">Nazwa modelu</h3>
+
+                        <p class="card-text text-secondary"
+                           th:text="'Generacja: ' + ${model.generation}">Generacja</p>
+
+                        <p class="card-text text-secondary"
+                           th:text="'Produkcja: ' + ${model.yearFrom} + ' - ' + ${model.yearTo}">Lata produkcji</p>
+
+                        <p class="text-muted small"
+                           th:text="'Liczba samochodów: ' + ${#lists.size(model.cars)}">0 samochodów</p>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+</body>
+</html>

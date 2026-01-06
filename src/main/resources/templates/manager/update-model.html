@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layout.html">
+<head>
+    <meta charset="UTF-8">
+    <title>Dodaj Nowy Model</title>
+</head>
+<body class="bg-dark text-light">
+
+<div layout:fragment="content" class="bg-gray-950 text-white font-sans">
+    <div class="container py-5">
+        <h2 class="text-center mb-4 text-primary">Zniem ten model</h2>
+        <form th:action="@{/manager/update/model/{id}(id=${carModel.id})}" th:object="${carModel}" method="post"
+              class="bg-secondary p-4 rounded-4 shadow-lg">
+
+            <input type="hidden" name="_method" value="PUT">
+
+
+        </form>
+    </div>
+</div>
+</body>
+</html>

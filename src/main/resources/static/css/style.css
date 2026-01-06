@@ -1,5 +1,6 @@
 /* === GLOBAL STYLES === */
 body {
+    margin: 0;
     background: radial-gradient(circle at 20% 20%, #1a1f3c, #0b0b13 70%);
     color: #fff;
     font-family: 'Inter', 'Segoe UI', sans-serif;
@@ -27,15 +28,16 @@ header {
     background: linear-gradient(to bottom, #121212, #0f0f13);
 }
 
-/* === CONTENT === */
+
 .content {
     margin-top: 50px;
+    padding-bottom: 80px;
     display: flex;
     flex-wrap: wrap;
-    align-items: stretch;
     justify-content: center;
     gap: 20px;
 }
+
 
 /* === INPUTS === */
 .search-input,
@@ -327,21 +329,12 @@ header {
     box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
 }
 .footer {
-    position: fixed;
-    bottom: 0;
-    left: 0;
     width: 100%;
     background: rgba(10, 10, 15, 0.95);
-    color: rgba(255, 255, 255, 0.6);
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.5);
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
     text-align: center;
-    padding: 12px 0;
-    font-size: 0.9rem;
-    font-weight: 400;
-    letter-spacing: 0.3px;
-    z-index: 1000;
-    backdrop-filter: blur(8px);
-    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.4);
-    transition: all 0.3s ease;
+    padding: 6px 0;
+    font-size: 0.8rem;
 }
 

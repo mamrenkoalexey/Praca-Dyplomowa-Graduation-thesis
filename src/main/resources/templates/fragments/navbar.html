@@ -10,9 +10,27 @@
 
         <nav class="d-none d-md-flex align-items-center gap-4">
 
-
             <a th:href="@{/}" class="text-decoration-none text-light">Strona Główna</a>
-            <a th:href="@{/manager/add}" sec:authorize="hasRole('MANAGER')" class="text-decoration-none text-light">Dodaj nowy samochod</a>
+            <a th:href="@{/manager/car-stats}" sec:authorize="hasRole('SELLER')"
+               class="text-decoration-none text-light">Proces Sprzedaży</a>
+            <a th:href="@{/manager/car-stats}" sec:authorize="hasRole('SELLER')"
+               class="text-decoration-none text-light">Proces Wynajmu</a>
+            <a th:href="@{/manager/car-stats}" sec:authorize="hasRole('MANAGER')"
+               class="text-decoration-none text-light">Proces Sprzedaży</a>
+            <a th:href="@{/manager/car-stats}" sec:authorize="hasRole('SELLER')"
+               class="text-decoration-none text-light">Proces Leasingu</a>
+            <a th:href="@{/manager/car-stats}" sec:authorize="hasRole('MANAGER')"
+               class="text-decoration-none text-light">Proces Wynajmu</a>
+            <a th:href="@{/manager/car-stats}" sec:authorize="hasRole('MANAGER')"
+               class="text-decoration-none text-light">Proces Leasingu</a>
+            <a th:href="@{/manager/car-stats}" sec:authorize="hasRole('MANAGER')"
+               class="text-decoration-none text-light">Zarządzaj Samochodami</a>
+            <a th:href="@{/manager/car-stats}" sec:authorize="hasRole('MANAGER')"
+               class="text-decoration-none text-light">Zarządzaj Klientami</a>
+            <a th:href="@{/manager/car-stats}" sec:authorize="hasRole('MANAGER')"
+               class="text-decoration-none text-light">Zarządzaj Płatnościami</a>
+            <a th:href="@{/manager/car-stats}" sec:authorize="hasRole('MANAGER')"
+               class="text-decoration-none text-light">Zarządzaj Pracownikami</a>
 
             <div sec:authorize="isAnonymous()">
                 <a th:href="@{/login}" class="d-flex align-items-center text-decoration-none text-light">
@@ -31,7 +49,7 @@
 
             <div sec:authorize="isAuthenticated()" class="d-flex align-items-center gap-3 text-light">
                 <span>
-                    👋 Witaj, <strong th:text="${#authentication.principal.displayName}">Użytkownik</strong>
+                    <strong th:text="${#authentication.principal.displayName}">Użytkownik</strong>
                 </span>
                 <a th:href="@{/profile}" class="btn btn-outline-light btn-sm">Mój profil</a>
                 <form th:action="@{/logout}" method="post" style="display:inline;">

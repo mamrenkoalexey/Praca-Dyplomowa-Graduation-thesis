@@ -86,7 +86,6 @@ public class MainController {
                 productionYear, mileageFrom, mileageTo);
 
         model.addAttribute("listOfSearchCars", listOfSearchCars);
-
         model.addAttribute("carBrands", carService.getAllBrands());
         model.addAttribute("searchCarBrand", brand);
 
@@ -96,22 +95,16 @@ public class MainController {
             model.addAttribute("carModels", Collections.emptyList());
         }
         model.addAttribute("searchCarModel", carModel);
-
         model.addAttribute("carBodyTypes", BodyType.values());
         model.addAttribute("searchCarBodyType", bodyType);
-
         model.addAttribute("carPriceFrom", priceFrom);
         model.addAttribute("carPriceTo", priceTo);
-
         model.addAttribute("carFuelTypes", FuelType.values());
         model.addAttribute("searchCarFuelType", fuelType);
-
         model.addAttribute("carYears", carService.getAllProductionYear());
         model.addAttribute("searchCarYear", productionYear);
-
         model.addAttribute("carMileageFrom", mileageFrom);
         model.addAttribute("carMileageTo", mileageTo);
-
         model.addAttribute("randomCars", carService.randomCars(12));
 
         return "search";

@@ -8,126 +8,126 @@
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
     <script>
-
         $.fn.select2.defaults.set('language', {
-            noResults: function () {
-                return "Brak wyników";
-            }
+            noResults: () => "Brak wyników"
         });
 
-        $(function() {
-          const $brand = $('#carBrandSelect');
-          const $model = $('#carModelSelect');
+        $(function () {
 
-          if (!$brand.length || !$model.length) return;
+            const $brand = $('#carBrandSelect');
+            const $model = $('#carModelSelect');
 
-          let preSelectedModelId = $model.data('selected-model-id') || null;
+            if (!$brand.length || !$model.length) return;
 
+            const preSelectedModelId = $model.data('selected-model-id') || null;
 
-          $('select.select2-dark').each(function () {
-            const $this = $(this);
-            const name = $this.attr('name');
-            let placeholder = 'Wybierz opcję';
-            let minResults = 10;
+            // === INIT SELECT2 ===
+            $('select.select2-dark').each(function () {
+                const name = $(this).attr('name');
+                let placeholder = 'Wybierz opcję';
+                let minResults = 10;
 
-            if (name === 'carBrand') placeholder = 'Wybierz Markę pojazdu';
-            if (name === 'carModel') {
-                placeholder = 'Najpierw wybierz markę';
-                minResults = Infinity;
-            }
-            if (name === 'carBodyType') placeholder = 'Typ Nadwozia';
-            if (name === 'carFuelType') placeholder = 'Rodzaj paliwa';
-            if (name === 'carYear' || name === 'year') placeholder = 'Rok produkcji';
+                if (name === 'carBrand') placeholder = 'Wybierz markę pojazdu';
+                if (name === 'carModel') {
+                    placeholder = 'Najpierw wybierz markę';
+                    minResults = Infinity;
+                }
+                if (name === 'carBodyType') placeholder = 'Typ nadwozia';
+                if (name === 'carFuelType') placeholder = 'Rodzaj paliwa';
+                if (name === 'carYear') placeholder = 'Rok produkcji';
 
-            if (!$this.data('select2')) {
-              $this.select2({
-                placeholder: placeholder,
-                allowClear: true,
-                width: '100%',
-                minimumResultsForSearch: minResults
-              });
-            }
-          });
-
-
-          function loadModels(brandId, restoreValue = null) {
-            $model.empty().trigger('change');
-            $model.html('<option value=""></option>');
-            $model.select2('destroy');
-
-            $model.select2({
-              placeholder: 'Ładowanie modeli...',
-              width: '100%',
-              allowClear: true,
-              minimumResultsForSearch: Infinity
+                $(this).select2({
+                    placeholder: placeholder,
+                    allowClear: true,
+                    width: '100%',
+                    minimumResultsForSearch: minResults
+                });
             });
 
-            fetch(`/models?brand=${encodeURIComponent(brandId)}`)
-              .then(res => {
-                if (!res.ok) throw new Error('Błąd odpowiedzi serwera');
-                return res.json();
-              })
-              .then(models => {
+            // === LOAD MODELS BY BRAND ===
+            function loadModels(brandId, restoreValue = null) {
+
+                if ($model.hasClass('select2-hidden-accessible')) {
+                    $model.select2('destroy');
+                }
+
                 $model.empty().append('<option value=""></option>');
 
-                let finalPlaceholder;
-                let finalMinResults;
-
-                if (!Array.isArray(models) || models.length === 0) {
-                  finalPlaceholder = 'Brak modeli dla tej marki';
-                  finalMinResults = Infinity;
-                } else {
-                  models.forEach(m => {
-                    $model.append(new Option(m.name, m.id));
-                  });
-                  finalPlaceholder = 'Wybierz Model Pojazdu';
-                  finalMinResults = 0;
-                }
-
-                $model.select2('destroy');
                 $model.select2({
-                  placeholder: finalPlaceholder,
-                  width: '100%',
-                  allowClear: true,
-                  minimumResultsForSearch: finalMinResults
+                    placeholder: 'Ładowanie modeli...',
+                    width: '100%',
+                    allowClear: true,
+                    minimumResultsForSearch: Infinity
                 });
 
-                if (restoreValue) {
-                  $model.val(restoreValue).trigger('change');
-                }
-              })
-              .catch(() => {
-                 $model.select2('destroy');
-                 $model.select2({
-                  placeholder: 'Błąd ładowania danych',
-                  width: '100%',
-                  allowClear: true,
-                  minimumResultsForSearch: Infinity
-                });
-              });
-          }
+                fetch(`/models?brand=${encodeURIComponent(brandId)}`)
+                    .then(res => res.json())
+                    .then(models => {
 
-          $brand.on('select2:select select2:clear', function() {
-            const brandId = $(this).val();
-            if (!brandId) {
-              $model.empty().val(null).trigger('change');
-              $model.select2('destroy');
-              $model.select2({
-                placeholder: 'Najpierw wybierz markę',
-                width: '100%',
-                allowClear: true,
-                minimumResultsForSearch: Infinity
-              });
-              return;
+                        $model.select2('destroy');
+                        $model.empty().append('<option value=""></option>');
+
+                        if (!models || models.length === 0) {
+                            $model.select2({
+                                placeholder: 'Brak modeli dla tej marki',
+                                width: '100%',
+                                allowClear: true,
+                                minimumResultsForSearch: Infinity
+                            });
+                            return;
+                        }
+
+                        models.forEach(m => {
+                            $model.append(new Option(m.name, m.id));
+                        });
+
+                        $model.select2({
+                            placeholder: 'Wybierz model pojazdu',
+                            width: '100%',
+                            allowClear: true,
+                            minimumResultsForSearch: models.length > 7 ? 0 : Infinity
+                        });
+
+                        if (restoreValue) {
+                            $model.val(restoreValue).trigger('change');
+                        }
+                    })
+                    .catch(() => {
+                        $model.select2('destroy');
+                        $model.select2({
+                            placeholder: 'Błąd ładowania danych',
+                            width: '100%',
+                            allowClear: true,
+                            minimumResultsForSearch: Infinity
+                        });
+                    });
             }
-            loadModels(brandId);
-          });
 
-          const initialBrandId = $brand.val();
-          if (initialBrandId) {
-            loadModels(initialBrandId, preSelectedModelId);
-          }
+            // === EVENTS ===
+            $brand.on('select2:select select2:clear', function () {
+                const brandId = $(this).val();
+
+                if (!brandId) {
+                    $model.select2('destroy');
+                    $model.empty().append('<option value=""></option>');
+                    $model.select2({
+                        placeholder: 'Najpierw wybierz markę',
+                        width: '100%',
+                        allowClear: true,
+                        minimumResultsForSearch: Infinity
+                    });
+                    return;
+                }
+
+                loadModels(brandId);
+            });
+
+            // === INIT ON PAGE LOAD (EDIT / SEARCH) ===
+            if ($brand.val()) {
+                loadModels($brand.val(), preSelectedModelId);
+            }
         });
     </script>
+
 </th:block>
 </html>

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="layout.html">
 <head>
@@ -13,8 +14,8 @@
         <div class="card bg-black border border-secondary shadow-lg p-4 car-details-card">
 
             <div class="text-center mb-4 image-wrapper car-details-image-wrapper">
-                <img th:src="@{/car.png}" alt="Car image" class="card-img-top car-details-img">
-                <a th:href="${returnUrl}" class="btn btn-primary btn-details">Powrót</a>
+                <img th:src="@{/cars/{img}(img=${car.carImage ?: 'default.png'})}"
+                     alt="Car image" class="card-img-top car-details-img">
             </div>
 
             <h2 class="text-center text-primary mb-3" th:text="${car.model.brand.name + ' ' + car.model.name}">Marka i model</h2>
@@ -26,7 +27,8 @@
                 <p><strong>Typ nadwozia:</strong> <span th:text="${car.bodyType}"></span></p>
                 <p class="text-primary fw-semibold fs-5 mb-3" th:text="${car.price + ' PLN'}">Cena</p>
             </div>
-
+                <a th:href="@{/manager/update/car/{id}(id=${car.id})}" class="btn btn-outline-primary px-4 py-2 fw-semibold rounded-pill shadow-sm"
+                   sec:authorize="hasRole('MANAGER')">Dodaj zmiany</a>
             <div class="mt-3">
                 <h3 class="text-lg font-medium text-white mb-2">Opis samochodu</h3>
                 <p th:if="${car.description != null}"
@@ -64,7 +66,9 @@
                 <div class="card bg-black border border-secondary h-100 shadow-sm car-card">
 
                     <div class="image-wrapper">
-                        <img th:src="@{/car.png}" alt="Car image" class="card-img-top">
+                        <img th:src="@{/cars/{img}(img=${randomCar.carImage ?: 'default.png'})}"
+                             class="img-fluid rounded shadow"
+                             style="width: 100%; height: 220px; object-fit: cover;">
                         <a th:href="@{/car/{id}(id=${randomCar.id}, from='/')}"
                            class="btn btn-primary btn-details">Szczegóły</a>
                     </div>

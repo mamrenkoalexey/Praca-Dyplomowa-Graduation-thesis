@@ -63,6 +63,7 @@ public class CarService {
         car.setSalon(updatedCar.getSalon());
         car.setStatus(updatedCar.getStatus());
         car.setDescription(updatedCar.getDescription());
+        car.setCarImage(updatedCar.getCarImage());
 
         return repository.save(car);
     }
@@ -142,4 +143,7 @@ public class CarService {
     }
 
 
+    public int count() {
+        return (int) repository.count();
+    }
 }

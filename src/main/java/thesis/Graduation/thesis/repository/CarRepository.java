@@ -21,6 +21,4 @@ public interface CarRepository extends JpaRepository<Car, Long>, JpaSpecificatio
 
     @Query("SELECT DISTINCT c.model FROM Car c WHERE c.model.brand.id = :brand ORDER BY c.model.name ASC")
     List<Model> findModelsByBrand(@Param("brand") Long brand);
-
-
 }

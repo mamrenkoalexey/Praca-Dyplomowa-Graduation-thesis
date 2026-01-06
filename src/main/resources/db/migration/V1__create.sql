@@ -42,7 +42,7 @@ CREATE TABLE `cars` (
   `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `body_type` enum('CONVERTIBLE','COUPE','CROSSOVER','HATCHBACK','PICKUP','SEDAN','SUV','VAN','WAGON') DEFAULT NULL,
   `color` varchar(255) NOT NULL,
-  `description` varchar(255) NOT NULL,
+  `description` varchar(255),
   `fuel_type` enum('DIESEL','ELECTRIC','HYBRID','LPG','PETROL') DEFAULT NULL,
   `mileage` double NOT NULL,
   `price` double NOT NULL,
