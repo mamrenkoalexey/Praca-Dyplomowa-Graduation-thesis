@@ -4,41 +4,98 @@
       layout:decorate="layout.html">
 <head>
     <meta charset="UTF-8">
-    <title>Dodaj Nowy Brand</title>
+    <title>Dodaj Nową Markę</title>
+    <style>
+        .form-section {
+            background: #000;
+            border-radius: 8px;
+            border: 1px solid #6c757d;
+            padding: 30px;
+        }
+        .form-control, .form-select {
+            background: #000;
+            border: 1px solid #6c757d;
+            color: #fff;
+            border-radius: 8px;
+            padding: 12px 15px;
+        }
+        .form-control:focus, .form-select:focus {
+            background: #000;
+            border-color: #0d6efd;
+            color: #fff;
+            box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+        }
+        .form-control::placeholder {
+            color: #ffffff;
+            opacity: 0.7;
+        }
+        .form-label {
+            color: #6c757d;
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+    </style>
 </head>
-<body class="bg-dark text-light">
+<body>
 
 <div layout:fragment="content" class="bg-gray-950 text-white font-sans">
-    <div class="container py-5">
-        <h2 class="text-center mb-4 text-primary">Dodaj nowy brand</h2>
 
+    <!-- Header Section -->
+    <section class="text-center py-4 bg-gradient-dark">
+        <div class="container">
+            <h2 class="display-5 fw-bold mb-3 gradient-heading">Dodaj Nową Markę</h2>
+            <p class="text-secondary fw-bold mb-0" style="font-size: 1.1rem;">
+                Wprowadź informacje o nowej marce pojazdu
+            </p>
+        </div>
+    </section>
+
+    <hr class="section-divider" style="margin-top: 0px; margin-bottom: 40px;">
+
+    <div class="container pb-5" style="max-width: 800px;">
         <form th:action="@{/manager/add-brand}" th:object="${newBrand}" method="post"
-              class="bg-secondary p-4 rounded-4 shadow-lg">
-            <div th:if="${errorMessage}" class="alert alert-danger text-center">
-                <p th:text="${errorMessage}"></p>
+              class="form-section">
+            
+            <div th:if="${errorMessage}" class="alert alert-danger mb-4">
+                <i class="bi bi-exclamation-triangle me-2"></i>
+                <span th:text="${errorMessage}"></span>
             </div>
 
-            <div class="mb-3">
-                <label class="form-label text-light">Nazwa Marki</label>
-                <input type="text" class="form-control" th:field="*{name}" placeholder="Wpisz nazwę marke" required>
-            </div>
-            <div class="mb-3">
-                <label class="form-label text-light">Kraj Pochodzenia</label>
-                <input type="text" class="form-control" th:field="*{country}" placeholder="Wpisz kraj pochodzenia"
-                       required>
-            </div>
-            <div class="mb-3">
-                <label class="form-label text-light">Logo</label>
-                <input type="text" class="form-control" th:field="*{logoURL}" placeholder="Wpisz link do logo">
+            <div class="mb-4">
+                <label class="form-label">
+                    <i class="bi bi-award me-2"></i>Nazwa Marki
+                </label>
+                <input type="text" class="form-control" th:field="*{name}" placeholder="Wpisz nazwę marki" required>
             </div>
 
+            <div class="mb-4">
+                <label class="form-label">
+                    <i class="bi bi-geo-alt me-2"></i>Kraj Pochodzenia
+                </label>
+                <input type="text" class="form-control" th:field="*{country}" placeholder="Wpisz kraj pochodzenia" required>
+            </div>
+
+            <div class="mb-4">
+                <label class="form-label">
+                    <i class="bi bi-image me-2"></i>Logo URL
+                </label>
+                <input type="text" class="form-control" th:field="*{logoURL}" placeholder="Wpisz link do logo (opcjonalne)">
+            </div>
+
+            <hr class="section-divider my-4">
 
             <div class="text-center">
-                <button type="submit" class="btn btn-success btn-lg px-5">Zapisz</button>
-                <a onclick="goBack()" class="btn btn-outline-light btn-lg px-5 ms-3">Powrót</a>
+                <button type="submit" class="btn btn-primary btn-lg rounded-pill px-5 me-3">
+                    <i class="bi bi-check-circle me-2"></i>Zapisz
+                </button>
+                <a href="#" onclick="history.back()" class="btn btn-secondary btn-lg rounded-pill px-5">
+                    <i class="bi bi-arrow-left me-2"></i>Powrót
+                </a>
             </div>
         </form>
     </div>
 </div>
+
 </body>
 </html>

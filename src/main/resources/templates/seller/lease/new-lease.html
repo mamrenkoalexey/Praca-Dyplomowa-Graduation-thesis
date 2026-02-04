@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layout.html">
+<head>
+    <title>Nowy Leasing | FAST BUY CAR</title>
+</head>
+<body>
+<div layout:fragment="content" class="bg-gray-950 text-white font-sans">
+
+    <section class="container py-5">
+        <div class="mb-4">
+            <a th:href="@{/seller/leases}" class="btn btn-outline-secondary px-4 py-2 rounded-pill">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left me-2" viewBox="0 0 16 16" style="vertical-align: middle;">
+                    <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8"/>
+                </svg>
+                Powrót do listy leasingów
+            </a>
+        </div>
+
+        <h2 class="gradient-heading mb-4">Utwórz Nowy Leasing</h2>
+
+        <!-- Error Message -->
+        <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <span th:text="${errorMessage}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+
+        <div class="card bg-black border border-secondary p-4">
+            <form th:action="@{/seller/leases/new}" method="post">
+                <div class="row g-4">
+                    <!-- Car Selection -->
+                    <div class="col-md-12">
+                        <label class="form-label text-light fw-semibold mb-3">
+                            Wybierz Samochód <span class="text-danger">*</span>
+                        </label>
+
+                        <!-- Hidden input to store selected car ID -->
+                        <input type="hidden" id="carIdInput" name="carId" required>
+
+                        <!-- Selected car info (shown when car is selected) -->
+                        <div id="selectedCarInfo" class="alert alert-success d-none mb-3" role="alert">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <strong>Wybrany samochód:</strong>
+                                    <div id="selectedCarDetails" class="mt-2"></div>
+                                </div>
+                                <button type="button" class="btn btn-sm btn-outline-light" id="changeCarBtn">
+                                    Zmień samochód
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Dropdown button to show car cards -->
+                        <button type="button"
+                                class="btn btn-outline-primary w-100 d-flex justify-content-between align-items-center mb-3"
+                                id="toggleCarCards"
+                                data-expanded="false">
+                            <span>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-car-front me-2" viewBox="0 0 16 16" style="vertical-align: middle;">
+                                    <path d="M4 9a1 1 0 1 1-2 0 1 1 0 0 1 2 0m10 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0M6 8a1 1 0 0 0 0 2h4a1 1 0 1 0 0-2zM4.862 4.276 3.906 6.19a.51.51 0 0 0 .497.731c.91-.073 2.35-.17 3.597-.17s2.688.097 3.597.17a.51.51 0 0 0 .497-.731l-.956-1.913A.5.5 0 0 0 10.691 4H5.309a.5.5 0 0 0-.447.276"/>
+                                    <path d="M2.52 3.515A2.5 2.5 0 0 1 4.82 2h6.362c1 0 1.904.596 2.298 1.515l.792 1.848c.075.175.21.319.38.404.5.25.855.715.965 1.262l.335 1.679q.05.242.049.49v.413c0 .814-.39 1.543-1 1.997V13.5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-1.338c-1.292.048-2.745.088-4 .088s-2.708-.04-4-.088V13.5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-1.892c-.61-.454-1-1.183-1-1.997v-.413a2.5 2.5 0 0 1 .049-.49l.335-1.68c.11-.546.465-1.012.964-1.261a.8.8 0 0 0 .381-.404l.792-1.848ZM4.82 3a1.5 1.5 0 0 0-1.379.91l-.792 1.847a1.8 1.8 0 0 1-.853.904.8.8 0 0 0-.43.564L1.03 8.904a1.5 1.5 0 0 0-.03.294v.413c0 .796.62 1.448 1.408 1.484 1.555.07 3.786.155 5.592.155s4.037-.084 5.592-.155A1.48 1.48 0 0 0 15 9.611v-.413q0-.148-.03-.294l-.335-1.68a.8.8 0 0 0-.43-.563 1.8 1.8 0 0 1-.853-.904l-.792-1.848A1.5 1.5 0 0 0 11.18 3z"/>
+                                </svg>
+                                <span id="toggleCarCardsText">Kliknij, aby wybrać samochód z dostępnych</span>
+                                <span class="badge bg-primary ms-2" th:text="${#lists.size(cars)} + ' dostępnych'">0 dostępnych</span>
+                            </span>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-chevron-down chevron-icon" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708"/>
+                            </svg>
+                        </button>
+
+                        <!-- Collapsible Car Cards Container -->
+                        <div id="carCardsContainer" class="car-cards-dropdown" style="display: none;">
+                            <div class="p-3 bg-dark border border-secondary rounded mb-3">
+                                <!-- Empty state when no cars available -->
+                                <div th:if="${#lists.isEmpty(cars)}" class="no-cars-message">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="currentColor" class="bi bi-car-front" viewBox="0 0 16 16">
+                                        <path d="M4 9a1 1 0 1 1-2 0 1 1 0 0 1 2 0m10 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0M6 8a1 1 0 0 0 0 2h4a1 1 0 1 0 0-2zM4.862 4.276 3.906 6.19a.51.51 0 0 0 .497.731c.91-.073 2.35-.17 3.597-.17s2.688.097 3.597.17a.51.51 0 0 0 .497-.731l-.956-1.913A.5.5 0 0 0 10.691 4H5.309a.5.5 0 0 0-.447.276"/>
+                                        <path d="M2.52 3.515A2.5 2.5 0 0 1 4.82 2h6.362c1 0 1.904.596 2.298 1.515l.792 1.848c.075.175.21.319.38.404.5.25.855.715.965 1.262l.335 1.679q.05.242.049.49v.413c0 .814-.39 1.543-1 1.997V13.5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-1.338c-1.292.048-2.745.088-4 .088s-2.708-.04-4-.088V13.5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-1.892c-.61-.454-1-1.183-1-1.997v-.413a2.5 2.5 0 0 1 .049-.49l.335-1.68c.11-.546.465-1.012.964-1.261a.8.8 0 0 0 .381-.404l.792-1.848ZM4.82 3a1.5 1.5 0 0 0-1.379.91l-.792 1.847a1.8 1.8 0 0 1-.853.904.8.8 0 0 0-.43.564L1.03 8.904a1.5 1.5 0 0 0-.03.294v.413c0 .796.62 1.448 1.408 1.484 1.555.07 3.786.155 5.592.155s4.037-.084 5.592-.155A1.48 1.48 0 0 0 15 9.611v-.413q0-.148-.03-.294l-.335-1.68a.8.8 0 0 0-.43-.563 1.8 1.8 0 0 1-.853-.904l-.792-1.848A1.5 1.5 0 0 0 11.18 3z"/>
+                                    </svg>
+                                    <p class="mb-0">Brak dostepnych samochodow do leasingu</p>
+                                </div>
+
+                                <!-- Cars list when available -->
+                                <div th:if="${!#lists.isEmpty(cars)}">
+                                    <small class="text-secondary d-block mb-3">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle me-1" viewBox="0 0 16 16" style="vertical-align: middle;">
+                                            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                                            <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533z"/>
+                                            <path d="M9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0"/>
+                                        </svg>
+                                        Kliknij na karte samochodu, aby go wybrac
+                                    </small>
+                                    <div class="row g-3">
+                                        <div class="col-sm-6 col-lg-4" th:each="car : ${cars}">
+                                            <div class="car-card-selectable"
+                                                 th:data-car-id="${car.id}"
+                                                 th:data-car-price="${car.price}">
+                                                <div class="card bg-black border border-secondary h-100 shadow-sm">
+                                                    <div class="image-wrapper">
+                                                        <img th:src="@{/cars/{img}(img=${car.carImage ?: 'default.png'})}"
+                                                             class="img-fluid rounded-top"
+                                                             alt="Car image">
+                                                        <!-- Selection indicator -->
+                                                        <div class="selection-indicator">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-check-circle-fill" viewBox="0 0 16 16">
+                                                                <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+                                                            </svg>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="card-body p-3">
+                                                        <h6 class="card-title text-light mb-2"
+                                                            th:text="${car.model.brand.name + ' ' + car.model.name}">Nazwa</h6>
+                                                        <p class="card-text text-secondary small mb-2">
+                                                            <span th:text="${car.productionYear + ' | ' + car.color}"></span><br>
+                                                            <span th:text="${#numbers.formatDecimal(car.mileage, 0, 'COMMA', 0, 'POINT')} + ' km'"></span>
+                                                        </p>
+                                                        <p class="text-primary fw-bold mb-0" th:text="${car.formattedPrice + ' PLN'}">Cena</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Client Selection -->
+                    <div class="col-md-6">
+                        <label for="clientSelect" class="form-label text-light fw-semibold">
+                            Wybierz Klienta <span class="text-danger">*</span>
+                        </label>
+                        <select id="clientSelect"
+                                name="clientId"
+                                class="select2-dark"
+                                style="width:100%"
+                                required>
+                            <option value="">-- Wybierz klienta --</option>
+                            <th:block th:each="client : ${clients}">
+                                <option th:value="${client.id}"
+                                        th:text="${client.firstName + ' ' + client.lastName + ' - ' + client.email}">
+                                    Jan Kowalski - jan@example.com
+                                </option>
+                            </th:block>
+                        </select>
+                    </div>
+
+                    <!-- Employee Selection -->
+                    <div class="col-md-6">
+                        <label for="employeeSelect" class="form-label text-light fw-semibold">
+                            Pracownik Odpowiedzialny <span class="text-danger">*</span>
+                        </label>
+                        <select id="employeeSelect"
+                                name="employeeId"
+                                class="select2-dark"
+                                style="width:100%"
+                                required>
+                            <option value="">-- Wybierz pracownika --</option>
+                            <th:block th:each="employee : ${employees}">
+                                <option th:value="${employee.id}"
+                                        th:text="${employee.firstName + ' ' + employee.lastName + ' (' + employee.role.displayName + ')'}">
+                                    Anna Nowak (Manager)
+                                </option>
+                            </th:block>
+                        </select>
+                    </div>
+
+                    <!-- Start Date -->
+                    <div class="col-md-6">
+                        <label for="startDate" class="form-label text-light fw-semibold">
+                            Data Rozpoczęcia <span class="text-danger">*</span>
+                        </label>
+                        <input type="date"
+                               id="startDate"
+                               name="startDate"
+                               class="form-control input-dark"
+                               required>
+                    </div>
+
+                    <!-- End Date -->
+                    <div class="col-md-6">
+                        <label for="endDate" class="form-label text-light fw-semibold">
+                            Data Zakończenia <span class="text-danger">*</span>
+                        </label>
+                        <input type="date"
+                               id="endDate"
+                               name="endDate"
+                               class="form-control input-dark"
+                               required>
+                    </div>
+
+                    <!-- Initial Payment -->
+                    <div class="col-md-6">
+                        <label for="initialPayment" class="form-label text-light fw-semibold">
+                            Wpłata Początkowa (PLN) <span class="text-danger">*</span>
+                        </label>
+                        <input type="number"
+                               id="initialPayment"
+                               name="initialPayment"
+                               class="form-control input-dark"
+                               step="0.01"
+                               min="0"
+                               placeholder="0.00"
+                               required>
+                    </div>
+
+                    <!-- Monthly Payment -->
+                    <div class="col-md-6">
+                        <label for="monthlyPayment" class="form-label text-light fw-semibold">
+                            Rata Miesięczna (PLN) <span class="text-danger">*</span>
+                        </label>
+                        <input type="number"
+                               id="monthlyPayment"
+                               name="monthlyPayment"
+                               class="form-control input-dark"
+                               step="0.01"
+                               min="0"
+                               placeholder="0.00"
+                               required>
+                    </div>
+
+                    <!-- Total Value Display -->
+                    <div class="col-md-12">
+                        <div class="alert alert-info" role="alert">
+                            <h6 class="alert-heading fw-bold">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-calculator me-2" viewBox="0 0 16 16" style="vertical-align: middle;">
+                                    <path d="M12 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM4 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z"/>
+                                    <path d="M4 2.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5zm0 4a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zm0 3a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zm0 3a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zm3-6a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zm0 3a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zm0 3a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zm3-6a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zm0 3a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5z"/>
+                                </svg>
+                                Podsumowanie Leasingu
+                            </h6>
+                            <p class="mb-0">
+                                <strong>Okres leasingu:</strong> <span id="leasePeriod">-</span> miesięcy<br>
+                                <strong>Łączna wartość:</strong> <span id="totalValue">0.00</span> PLN
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Notes -->
+                    <div class="col-md-12">
+                        <label for="notes" class="form-label text-light fw-semibold">
+                            Notatki (opcjonalnie)
+                        </label>
+                        <textarea id="notes"
+                                  name="notes"
+                                  class="form-control input-dark"
+                                  rows="4"
+                                  placeholder="Dodatkowe informacje o leasingu..."></textarea>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="col-md-12">
+                        <button type="submit" class="btn btn-primary btn-lg rounded-pill px-5">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-circle me-2" viewBox="0 0 16 16" style="vertical-align: middle;">
+                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                                <path d="m10.97 4.97-.02.022-3.473 4.425-2.093-2.094a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05"/>
+                            </svg>
+                            Utwórz Leasing
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Info Box -->
+        <div class="alert alert-info mt-4" role="alert">
+            <h6 class="alert-heading fw-bold">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-info-circle me-2" viewBox="0 0 16 16" style="vertical-align: middle;">
+                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                    <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533z"/>
+                    <path d="M9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0"/>
+                </svg>
+                Ważne informacje
+            </h6>
+            <ul class="mb-0">
+                <li>Po utworzeniu leasingu, status samochodu zostanie zmieniony na "Zarezerwowany"</li>
+                <li>System automatycznie wygeneruje harmonogram płatności</li>
+                <li>Leasing rozpocznie się ze statusem "Oczekujący" i wymaga aktywacji</li>
+                <li>Numer umowy zostanie wygenerowany automatycznie</li>
+            </ul>
+        </div>
+    </section>
+
+</div>
+
+<th:block layout:fragment="scripts">
+    <script>
+        $(document).ready(function() {
+            // Initialize Select2 for dropdowns
+            $('.select2-dark').select2({
+                theme: 'default',
+                placeholder: function() {
+                    return $(this).find('option:first').text();
+                },
+                allowClear: true
+            });
+
+            // Toggle car cards dropdown
+            $('#toggleCarCards').on('click', function() {
+                const container = $('#carCardsContainer');
+                const chevron = $(this).find('.chevron-icon');
+                const isExpanded = $(this).attr('data-expanded') === 'true';
+
+                if (isExpanded) {
+                    container.slideUp(400);
+                    chevron.css('transform', 'rotate(0deg)');
+                    $(this).attr('data-expanded', 'false');
+                } else {
+                    container.slideDown(400);
+                    chevron.css('transform', 'rotate(180deg)');
+                    $(this).attr('data-expanded', 'true');
+                }
+            });
+
+            // Handle "Change Car" button
+            $('#changeCarBtn').on('click', function() {
+                $('.car-card-selectable').removeClass('selected');
+                $('#carIdInput').val('');
+                $('#selectedCarInfo').addClass('d-none');
+
+                const toggleBtn = $('#toggleCarCards');
+                if (toggleBtn.attr('data-expanded') === 'false') {
+                    toggleBtn.click();
+                }
+
+                $('html, body').animate({
+                    scrollTop: $('#toggleCarCards').offset().top - 100
+                }, 500);
+            });
+
+            // Handle car card selection
+            $('.car-card-selectable').on('click', function() {
+                $('.car-card-selectable').removeClass('selected');
+                $(this).addClass('selected');
+
+                const carId = $(this).data('car-id');
+                const carName = $(this).find('.card-title').text();
+                const carDetails = $(this).find('.card-text').text().trim();
+
+                $('#carIdInput').val(carId);
+                $('#selectedCarDetails').html(
+                    '<strong>' + carName + '</strong><br>' +
+                    '<small class="text-dark">' + carDetails.replace(/\n/g, ' • ') + '</small>'
+                );
+                $('#selectedCarInfo').removeClass('d-none');
+                $('#toggleCarCardsText').text('Wybrany samochód: ' + carName);
+
+                const container = $('#carCardsContainer');
+                const chevron = $('#toggleCarCards').find('.chevron-icon');
+                container.slideUp(400);
+                chevron.css('transform', 'rotate(0deg)');
+                $('#toggleCarCards').attr('data-expanded', 'false');
+
+                $('html, body').animate({
+                    scrollTop: $('#selectedCarInfo').offset().top - 100
+                }, 500);
+            });
+
+            // Calculate total value
+            function calculateTotal() {
+                const startDate = $('#startDate').val();
+                const endDate = $('#endDate').val();
+                const initialPayment = parseFloat($('#initialPayment').val()) || 0;
+                const monthlyPayment = parseFloat($('#monthlyPayment').val()) || 0;
+
+                if (startDate && endDate) {
+                    const start = new Date(startDate);
+                    const end = new Date(endDate);
+                    const months = (end.getFullYear() - start.getFullYear()) * 12 + (end.getMonth() - start.getMonth());
+
+                    if (months > 0) {
+                        $('#leasePeriod').text(months);
+                        const total = initialPayment + (monthlyPayment * months);
+                        $('#totalValue').text(total.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','));
+                    } else {
+                        $('#leasePeriod').text('-');
+                        $('#totalValue').text('0.00');
+                    }
+                } else {
+                    $('#leasePeriod').text('-');
+                    $('#totalValue').text('0.00');
+                }
+            }
+
+            // Recalculate on input change
+            $('#startDate, #endDate, #initialPayment, #monthlyPayment').on('change input', calculateTotal);
+
+            // Set minimum date to today
+            const today = new Date().toISOString().split('T')[0];
+            $('#startDate').attr('min', today);
+            $('#endDate').attr('min', today);
+
+            // Update end date minimum when start date changes
+            $('#startDate').on('change', function() {
+                $('#endDate').attr('min', $(this).val());
+            });
+
+            // Form validation
+            $('form').on('submit', function(e) {
+                const carId = $('#carIdInput').val();
+                if (!carId) {
+                    e.preventDefault();
+                    alert('Proszę wybrać samochód przed kontynuowaniem.');
+
+                    const toggleBtn = $('#toggleCarCards');
+                    if (toggleBtn.attr('data-expanded') === 'false') {
+                        toggleBtn.click();
+                    }
+
+                    $('html, body').animate({
+                        scrollTop: $('#toggleCarCards').offset().top - 100
+                    }, 500);
+                }
+            });
+        });
+    </script>
+</th:block>
+</body>
+</html>

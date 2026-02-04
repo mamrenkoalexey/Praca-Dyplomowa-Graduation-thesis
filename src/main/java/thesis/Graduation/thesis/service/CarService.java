@@ -115,8 +115,8 @@ public class CarService {
         return repository.findAllProductionYear();
     }
 
-    public List<Model> getModelsByBrand(Long brand) {
-        return repository.findModelsByBrand(brand);
+    public List<Model> getModelsByBrand(Long brandId) {
+        return modelRepository.findByBrandId(brandId);
     }
 
     public boolean searchNullParam(Brand brand,

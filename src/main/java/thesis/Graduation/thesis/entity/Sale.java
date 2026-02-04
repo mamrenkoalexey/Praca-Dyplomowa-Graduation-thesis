@@ -20,6 +20,7 @@ public class Sale extends BaseEntity {
     private Double totalAmount;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private PaymentMethod paymentMethod;
 
 

@@ -36,4 +36,5 @@ public class CustomUserDetailsService implements UserDetailsService {
         throw new UsernameNotFoundException("Nie znaleziono użytkownika o loginie: " + username);
     }
 
+
 }

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layout.html">
+<head>
+    <title>Leasingi Klienta | FAST BUY CAR</title>
+</head>
+<body>
+<div layout:fragment="content" class="bg-gray-950 text-white font-sans">
+
+    <section class="container py-5">
+        <div class="mb-4">
+            <a th:href="@{/seller/leases}" class="btn btn-outline-secondary px-4 py-2 rounded-pill">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left me-2" viewBox="0 0 16 16" style="vertical-align: middle;">
+                    <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8"/>
+                </svg>
+                Powrót do listy leasingów
+            </a>
+        </div>
+
+        <h2 class="gradient-heading mb-4">Leasingi Klienta</h2>
+
+        <!-- Client Info -->
+        <div class="card bg-black border border-secondary p-4 mb-4">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5 class="text-light mb-3">Informacje o kliencie</h5>
+                    <p class="text-secondary mb-1">Imię i nazwisko</p>
+                    <p class="text-light fw-bold mb-3" th:text="${client.firstName + ' ' + client.lastName}">Jan Kowalski</p>
+                    <p class="text-secondary mb-1">Email</p>
+                    <p class="text-light" th:text="${client.email}">jan@example.com</p>
+                </div>
+                <div class="col-md-6">
+                    <p class="text-secondary mb-1">Telefon</p>
+                    <p class="text-light mb-3" th:text="${client.phoneNumber}">+48 123 456 789</p>
+                    <p class="text-secondary mb-1">Status</p>
+                    <span th:class="${client.active ? 'badge bg-success' : 'badge bg-danger'}"
+                          th:text="${client.active ? 'Aktywny' : 'Nieaktywny'}">Aktywny</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Leases Table -->
+        <div class="card bg-black border border-secondary">
+            <div class="card-body">
+                <h5 class="text-light mb-4">Historia Leasingów (<span th:text="${#lists.size(leases)}">0</span>)</h5>
+                <div class="table-responsive">
+                    <table class="table table-dark table-hover">
+                        <thead>
+                            <tr>
+                                <th>Numer umowy</th>
+                                <th>Samochód</th>
+                                <th>Okres</th>
+                                <th>Rata miesięczna</th>
+                                <th>Łączna wartość</th>
+                                <th>Status</th>
+                                <th>Akcje</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:if="${#lists.isEmpty(leases)}">
+                                <td colspan="7" class="text-center text-secondary py-5">
+                                    Ten klient nie ma jeszcze żadnych leasingów
+                                </td>
+                            </tr>
+                            <tr th:each="lease : ${leases}">
+                                <td>
+                                    <span class="fw-bold" th:text="${lease.contractNumber}">LEASE-ABC123</span>
+                                </td>
+                                <td>
+                                    <span th:text="${lease.car.model.brand.name + ' ' + lease.car.model.name}">Toyota Corolla</span>
+                                    <br>
+                                    <small class="text-secondary" th:text="'Rok: ' + ${lease.car.productionYear}">Rok: 2020</small>
+                                </td>
+                                <td>
+                                    <span th:text="${#temporals.format(lease.startDate, 'dd-MM-yyyy')}">01-01-2024</span>
+                                    <br>
+                                    <small class="text-secondary">do</small>
+                                    <br>
+                                    <span th:text="${#temporals.format(lease.endDate, 'dd-MM-yyyy')}">01-12-2024</span>
+                                </td>
+                                <td class="fw-bold" th:text="${lease.formattedMonthlyPayment + ' PLN'}">2000.00 PLN</td>
+                                <td class="fw-bold text-success" th:text="${lease.formattedTotalValue + ' PLN'}">50000.00 PLN</td>
+                                <td>
+                                    <span th:class="${'badge ' +
+                                        (lease.status.name() == 'ACTIVE' ? 'bg-success' :
+                                         lease.status.name() == 'PENDING' ? 'bg-warning' :
+                                         lease.status.name() == 'COMPLETED' ? 'bg-info' :
+                                         'bg-secondary')}"
+                                          th:text="${lease.status.displayName}">Aktywny</span>
+                                </td>
+                                <td>
+                                    <a th:href="@{/seller/leases/{id}(id=${lease.id})}" class="btn btn-sm btn-outline-primary">
+                                        Szczegóły
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</div>
+</body>
+</html>

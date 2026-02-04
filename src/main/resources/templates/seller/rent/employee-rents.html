@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layout.html">
+<head>
+    <title>Wynajmy Pracownika | FAST BUY CAR</title>
+</head>
+<body>
+<div layout:fragment="content" class="bg-gray-950 text-white font-sans">
+
+    <section class="container py-5">
+        <div class="mb-4">
+            <a th:href="@{/seller/rents}" class="btn btn-outline-secondary px-4 py-2 rounded-pill">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left me-2" viewBox="0 0 16 16" style="vertical-align: middle;">
+                    <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8"/>
+                </svg>
+                Powrot do listy wynajmow
+            </a>
+        </div>
+
+        <h2 class="gradient-heading mb-4">Wynajmy Pracownika</h2>
+
+        <!-- Employee Info -->
+        <div class="card bg-black border border-secondary p-4 mb-4">
+            <div class="row">
+                <div class="col-md-6">
+                    <p class="text-secondary mb-1">Pracownik</p>
+                    <p class="text-light fw-bold fs-5" th:text="${employee.firstName + ' ' + employee.lastName}">Anna Nowak</p>
+                </div>
+                <div class="col-md-6">
+                    <p class="text-secondary mb-1">Stanowisko</p>
+                    <p class="text-light" th:text="${employee.role.displayName}">Sprzedawca</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Rents Table -->
+        <div class="card bg-black border border-secondary">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-dark table-hover">
+                        <thead>
+                            <tr>
+                                <th>Numer wynajmu</th>
+                                <th>Samochod</th>
+                                <th>Klient</th>
+                                <th>Okres</th>
+                                <th>Laczna kwota</th>
+                                <th>Status</th>
+                                <th>Akcje</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:if="${#lists.isEmpty(rents)}">
+                                <td colspan="7" class="text-center text-secondary py-5">
+                                    <div>Brak wynajmow dla tego pracownika</div>
+                                </td>
+                            </tr>
+                            <tr th:each="rent : ${rents}">
+                                <td>
+                                    <span class="fw-bold" th:text="${rent.rentNumber}">RENT-ABC123</span>
+                                </td>
+                                <td th:text="${rent.car.model.brand.name + ' ' + rent.car.model.name}">Toyota Corolla</td>
+                                <td th:text="${rent.client.firstName + ' ' + rent.client.lastName}">Jan Kowalski</td>
+                                <td>
+                                    <span th:text="${#temporals.format(rent.rentStart, 'dd-MM-yyyy')}">01-01-2024</span>
+                                    -
+                                    <span th:text="${#temporals.format(rent.rentEnd, 'dd-MM-yyyy')}">07-01-2024</span>
+                                </td>
+                                <td class="fw-bold text-success" th:text="${rent.formattedTotalAmount + ' PLN'}">1400.00 PLN</td>
+                                <td>
+                                    <span th:class="${'badge ' +
+                                        (rent.status.name() == 'ACTIVE' ? 'bg-success' :
+                                         rent.status.name() == 'COMPLETED' ? 'bg-info' :
+                                         rent.status.name() == 'LATE_RETURN' ? 'bg-warning' :
+                                         'bg-secondary')}"
+                                          th:text="${rent.status.displayName}">Aktywny</span>
+                                </td>
+                                <td>
+                                    <a th:href="@{/seller/rents/{id}(id=${rent.id})}" class="btn btn-sm btn-outline-primary">Szczegoly</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</div>
+</body>
+</html>

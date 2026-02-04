@@ -4,21 +4,119 @@
       layout:decorate="layout.html">
 <head>
     <meta charset="UTF-8">
-    <title>Dodaj Nowy Model</title>
+    <title>Edytuj Model</title>
+    <style>
+        .form-section {
+            background: #000;
+            border-radius: 8px;
+            border: 1px solid #6c757d;
+            padding: 30px;
+        }
+        .form-control, .form-select {
+            background: #000;
+            border: 1px solid #6c757d;
+            color: #fff;
+            border-radius: 8px;
+            padding: 12px 15px;
+        }
+        .form-control:focus, .form-select:focus {
+            background: #000;
+            border-color: #0d6efd;
+            color: #fff;
+            box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+        }
+        .form-control::placeholder {
+            color: #ffffff;
+            opacity: 0.7;
+        }
+        .form-label {
+            color: #6c757d;
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+    </style>
 </head>
-<body class="bg-dark text-light">
+<body>
 
 <div layout:fragment="content" class="bg-gray-950 text-white font-sans">
-    <div class="container py-5">
-        <h2 class="text-center mb-4 text-primary">Zniem ten model</h2>
+
+    <!-- Header Section -->
+    <section class="text-center py-4 bg-gradient-dark">
+        <div class="container">
+            <h2 class="display-5 fw-bold mb-3 gradient-heading">Edytuj Model</h2>
+            <p class="text-secondary fw-bold mb-0" style="font-size: 1.1rem;">
+                Zaktualizuj informacje o modelu pojazdu
+            </p>
+        </div>
+    </section>
+
+    <hr class="section-divider" style="margin-top: 0px; margin-bottom: 40px;">
+
+    <div class="container pb-5" style="max-width: 800px;">
         <form th:action="@{/manager/update/model/{id}(id=${carModel.id})}" th:object="${carModel}" method="post"
-              class="bg-secondary p-4 rounded-4 shadow-lg">
+              class="form-section">
 
             <input type="hidden" name="_method" value="PUT">
 
+            <div class="mb-4">
+                <label class="form-label">
+                    <i class="bi bi-car-front me-2"></i>Nazwa modelu
+                </label>
+                <input type="text" class="form-control" th:field="*{name}" placeholder="Wpisz nazwę modelu" required>
+            </div>
 
+            <div class="mb-4">
+                <label class="form-label">
+                    <i class="bi bi-award me-2"></i>Marka
+                </label>
+                <select class="form-select" th:field="*{brand}" required>
+                    <option value="">Wybierz markę</option>
+                    <option th:each="brand : ${brands}" 
+                            th:value="${brand.id}" 
+                            th:text="${brand.name}"
+                            th:selected="${brand.id == carModel.brand.id}">
+                    </option>
+                </select>
+            </div>
+
+            <div class="mb-4">
+                <label class="form-label">
+                    <i class="bi bi-tag me-2"></i>Generacja
+                </label>
+                <input type="text" class="form-control" th:field="*{generation}" placeholder="Np. II, F30, MK7" required>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-4">
+                    <label class="form-label">
+                        <i class="bi bi-calendar-event me-2"></i>Rok produkcji (od)
+                    </label>
+                    <input type="number" min="1950" max="2030" class="form-control"
+                           th:field="*{yearFrom}" placeholder="Np. 2015" required>
+                </div>
+                <div class="col-md-6 mb-4">
+                    <label class="form-label">
+                        <i class="bi bi-calendar-check me-2"></i>Rok produkcji (do)
+                    </label>
+                    <input type="number" min="1950" max="2030" class="form-control"
+                           th:field="*{yearTo}" placeholder="Np. 2020" required>
+                </div>
+            </div>
+
+            <hr class="section-divider my-4">
+
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary btn-lg rounded-pill px-5 me-3">
+                    <i class="bi bi-check-circle me-2"></i>Zapisz zmiany
+                </button>
+                <a href="#" onclick="history.back()" class="btn btn-secondary btn-lg rounded-pill px-5">
+                    <i class="bi bi-arrow-left me-2"></i>Powrót
+                </a>
+            </div>
         </form>
     </div>
 </div>
+
 </body>
 </html>

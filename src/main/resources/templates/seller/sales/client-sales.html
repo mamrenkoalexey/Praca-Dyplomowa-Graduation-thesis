@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layout.html">
+<head>
+    <title>Sprzedaże Klienta | FAST BUY CAR</title>
+</head>
+<body>
+<div layout:fragment="content" class="bg-gray-950 text-white font-sans">
+
+    <section class="container py-5">
+        <div class="mb-4">
+            <a th:href="@{/seller/sales}" class="btn btn-outline-secondary px-4 py-2 rounded-pill">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left me-2" viewBox="0 0 16 16" style="vertical-align: middle;">
+                    <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8"/>
+                </svg>
+                Powrót do listy sprzedaży
+            </a>
+        </div>
+
+        <h2 class="gradient-heading mb-4">Historia Zakupów Klienta</h2>
+
+        <!-- Client Info -->
+        <div class="card bg-black border border-secondary p-4 mb-4">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5 class="text-light mb-3">Informacje o kliencie</h5>
+                    <p class="text-secondary mb-1">Imię i nazwisko</p>
+                    <p class="text-light fw-bold mb-3" th:text="${client.firstName + ' ' + client.lastName}">Jan Kowalski</p>
+                    <p class="text-secondary mb-1">Email</p>
+                    <p class="text-light" th:text="${client.email}">jan@example.com</p>
+                </div>
+                <div class="col-md-6">
+                    <p class="text-secondary mb-1">Liczba zakupów</p>
+                    <p class="text-primary fw-bold fs-4" th:text="${totalSales}">0</p>
+                    <p class="text-secondary mb-1">Całkowity wydatek</p>
+                    <p class="text-success fw-bold fs-4" th:text="${#numbers.formatDecimal(totalRevenue, 0, 'COMMA', 0, 'POINT')} + ' PLN'">0 PLN</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sales Table -->
+        <div class="card bg-black border border-secondary">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-dark table-hover">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Data zakupu</th>
+                                <th>Samochód</th>
+                                <th>Pracownik</th>
+                                <th>Kwota</th>
+                                <th>Metoda płatności</th>
+                                <th>Akcje</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:if="${#lists.isEmpty(sales)}">
+                                <td colspan="7" class="text-center text-secondary py-5">Ten klient nie dokonał jeszcze żadnych zakupów</td>
+                            </tr>
+                            <tr th:each="sale : ${sales}">
+                                <td th:text="${sale.id}">1</td>
+                                <td th:text="${#temporals.format(sale.saleDate, 'dd-MM-yyyy')}">01-01-2024</td>
+                                <td>
+                                    <span th:text="${sale.car.model.brand.name + ' ' + sale.car.model.name}">Toyota Corolla</span>
+                                    <br>
+                                    <small class="text-secondary" th:text="${'Rok: ' + sale.car.productionYear}">Rok: 2020</small>
+                                </td>
+                                <td th:text="${sale.employee.firstName + ' ' + sale.employee.lastName}">Anna Nowak</td>
+                                <td class="fw-bold text-success" th:text="${#numbers.formatDecimal(sale.totalAmount, 0, 'COMMA', 0, 'POINT')} + ' PLN'">50000 PLN</td>
+                                <td>
+                                    <span class="badge bg-info" th:text="${sale.paymentMethod.displayName}">Gotówka</span>
+                                </td>
+                                <td>
+                                    <a th:href="@{/seller/sales/{id}(id=${sale.id})}" class="btn btn-sm btn-outline-primary">
+                                        Szczegóły
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</div>
+</body>
+</html>

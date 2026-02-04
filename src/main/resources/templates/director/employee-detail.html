@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layout.html">
+<head>
+    <meta charset="UTF-8">
+    <title>Szczegoly pracownika</title>
+    <style>
+        .detail-section {
+            background: #000;
+            border-radius: 8px;
+            border: 1px solid #6c757d;
+            padding: 30px;
+        }
+        .info-label {
+            color: #6c757d;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 5px;
+        }
+        .info-value {
+            color: #fff;
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+        }
+        .status-badge {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 500;
+        }
+        .role-badge {
+            font-size: 0.9rem;
+            padding: 6px 14px;
+            border-radius: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div layout:fragment="content" class="bg-gray-950 text-white font-sans">
+
+    <section class="text-center py-4 bg-gradient-dark">
+        <div class="container">
+            <h2 class="display-5 fw-bold mb-3 gradient-heading" th:text="${employee.firstName + ' ' + employee.lastName}">Imie Nazwisko</h2>
+            <div class="d-flex justify-content-center gap-3 align-items-center">
+                <span class="badge role-badge"
+                      th:classappend="${employee.role.name() == 'DIRECTOR'} ? 'bg-danger' :
+                                      (${employee.role.name() == 'MANAGER'} ? 'bg-warning text-dark' :
+                                      (${employee.role.name() == 'SELLER'} ? 'bg-info' : 'bg-secondary'))"
+                      th:text="${employee.role.displayName}">Rola</span>
+                <span th:if="${employee.active}" class="badge status-badge bg-success">
+                    <i class="bi bi-check-circle me-1"></i>Aktywny
+                </span>
+                <span th:unless="${employee.active}" class="badge status-badge bg-danger">
+                    <i class="bi bi-x-circle me-1"></i>Nieaktywny
+                </span>
+            </div>
+        </div>
+    </section>
+
+    <hr class="section-divider" style="margin-top: 0px; margin-bottom: 40px;">
+
+    <div class="container pb-5">
+        <div class="detail-section">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="info-label">
+                        <i class="bi bi-person me-1"></i>Imie
+                    </div>
+                    <div class="info-value" th:text="${employee.firstName}">Imie</div>
+                </div>
+                <div class="col-md-6">
+                    <div class="info-label">
+                        <i class="bi bi-person me-1"></i>Nazwisko
+                    </div>
+                    <div class="info-value" th:text="${employee.lastName}">Nazwisko</div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="info-label">
+                        <i class="bi bi-envelope me-1"></i>Email
+                    </div>
+                    <div class="info-value">
+                        <a th:href="'mailto:' + ${employee.email}" class="text-primary text-decoration-none" th:text="${employee.email}">email@example.com</a>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="info-label">
+                        <i class="bi bi-telephone me-1"></i>Telefon
+                    </div>
+                    <div class="info-value">
+                        <a th:href="'tel:' + ${employee.phone}" class="text-primary text-decoration-none" th:text="${employee.phone}">+48 123 456 789</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="info-label">
+                        <i class="bi bi-person-badge me-1"></i>Login
+                    </div>
+                    <div class="info-value" th:text="${employee.login}">login</div>
+                </div>
+                <div class="col-md-6">
+                    <div class="info-label">
+                        <i class="bi bi-briefcase me-1"></i>Stanowisko
+                    </div>
+                    <div class="info-value" th:text="${employee.role.displayName}">Stanowisko</div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="info-label">
+                        <i class="bi bi-building me-1"></i>Salon
+                    </div>
+                    <div class="info-value" th:text="${employee.salon != null ? employee.salon.name : 'Nie przypisano'}">Salon</div>
+                </div>
+                <div class="col-md-6">
+                    <div class="info-label">
+                        <i class="bi bi-cash me-1"></i>Wynagrodzenie
+                    </div>
+                    <div class="info-value text-primary fw-bold" th:text="${#numbers.formatDecimal(employee.salary, 0, 'COMMA', 2, 'POINT')} + ' PLN'">0 PLN</div>
+                </div>
+            </div>
+
+            <hr class="section-divider my-4">
+
+            <div class="row">
+                <div class="col-md-4 text-center mb-3">
+                    <div class="info-label">Sprzedaze</div>
+                    <div class="display-6 text-primary" th:text="${employee.sales != null ? #lists.size(employee.sales) : 0}">0</div>
+                </div>
+                <div class="col-md-4 text-center mb-3">
+                    <div class="info-label">Leasingi</div>
+                    <div class="display-6 text-info" th:text="${employee.leases != null ? #lists.size(employee.leases) : 0}">0</div>
+                </div>
+                <div class="col-md-4 text-center mb-3">
+                    <div class="info-label">Wynajmy</div>
+                    <div class="display-6 text-warning" th:text="${employee.rents != null ? #lists.size(employee.rents) : 0}">0</div>
+                </div>
+            </div>
+
+            <hr class="section-divider my-4">
+
+            <div class="d-flex justify-content-center gap-3 flex-wrap">
+                <a th:href="@{/director/employees/edit/{id}(id=${employee.id})}" class="btn btn-primary px-4 py-2 fw-semibold rounded-pill shadow-sm">
+                    <i class="bi bi-pencil me-2"></i>Edytuj
+                </a>
+                <form th:if="${employee.active}" th:action="@{/director/employees/deactivate/{id}(id=${employee.id})}" method="post" style="display: inline;">
+                    <input type="hidden" name="_method" value="DELETE"/>
+                    <button type="submit" class="btn btn-danger px-4 py-2 fw-semibold rounded-pill shadow-sm"
+                            onclick="return confirm('Czy na pewno chcesz dezaktywowac tego pracownika?')">
+                        <i class="bi bi-person-x me-2"></i>Dezaktywuj
+                    </button>
+                </form>
+                <button type="button" onclick="goBack()" class="btn btn-outline-secondary px-4 py-2 fw-semibold rounded-pill shadow-sm">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left me-2" viewBox="0 0 16 16" style="vertical-align: middle;">
+                        <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8"/>
+                    </svg>
+                    Powrot do listy
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

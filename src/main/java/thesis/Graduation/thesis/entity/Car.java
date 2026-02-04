@@ -184,4 +184,14 @@ public class Car extends BaseEntity {
     public void setDescription(String description) {
         this.description = description;
     }
+
+
+    public Long getPriceAsInteger() {
+        return price != null ? price.longValue() : 0L;
+    }
+
+    public String getFormattedPrice() {
+        if (price == null) return "0";
+        return String.format("%,d", price.longValue()).replace(',', ' ');
+    }
 }

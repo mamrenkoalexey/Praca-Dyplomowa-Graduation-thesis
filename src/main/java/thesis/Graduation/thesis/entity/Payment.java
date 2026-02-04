@@ -16,7 +16,7 @@ public class Payment extends BaseEntity {
     @Column(nullable = false)
     private LocalDate deuDate;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private LocalDate paymentDate;
 
     @Column(nullable = false)
@@ -141,6 +141,14 @@ public class Payment extends BaseEntity {
 
     public void setInvoice(Invoice invoice) {
         this.invoice = invoice;
+    }
+
+    public Sale getSale() {
+        return sale;
+    }
+
+    public void setSale(Sale sale) {
+        this.sale = sale;
     }
 }
 

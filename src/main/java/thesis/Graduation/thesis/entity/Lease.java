@@ -173,4 +173,44 @@ public class Lease extends BaseEntity {
     public void setPayments(List<Payment> payments) {
         this.payments = payments;
     }
+
+    // Helper methods for formatted display
+    public String getFormattedInitialPayment() {
+        return String.format("%,.2f", initialPayment);
+    }
+
+    public String getFormattedMonthlyPayment() {
+        return String.format("%,.2f", monthlyPayment);
+    }
+
+    public String getFormattedTotalValue() {
+        return String.format("%,.2f", totalValue);
+    }
+
+    public long getLeaseDurationInMonths() {
+        if (startDate != null && endDate != null) {
+            return java.time.temporal.ChronoUnit.MONTHS.between(startDate, endDate);
+        }
+        return 0;
+    }
+
+    public double getTotalPaid() {
+        if (payments == null) return 0.0;
+        return payments.stream()
+                .filter(p -> p.getStatus() == thesis.Graduation.thesis.entity.enums.PaymentStatus.COMPLETED)
+                .mapToDouble(Payment::getAmount)
+                .sum();
+    }
+
+    public double getRemainingAmount() {
+        return totalValue - getTotalPaid();
+    }
+
+    public String getFormattedTotalPaid() {
+        return String.format("%,.2f", getTotalPaid());
+    }
+
+    public String getFormattedRemainingAmount() {
+        return String.format("%,.2f", getRemainingAmount());
+    }
 }

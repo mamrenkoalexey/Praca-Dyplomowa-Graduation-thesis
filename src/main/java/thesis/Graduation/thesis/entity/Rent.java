@@ -200,4 +200,20 @@ public class Rent extends BaseEntity {
         this.payments = payments;
     }
 
+    // Helper methods for formatting
+    public String getFormattedDailyRate() {
+        return String.format("%,.2f", dailyRate);
+    }
+
+    public String getFormattedTotalAmount() {
+        return String.format("%,.2f", totalAmount);
+    }
+
+    public String getFormattedDeposit() {
+        return String.format("%,.2f", deposit);
+    }
+
+    public long getRentDurationInDays() {
+        return java.time.temporal.ChronoUnit.DAYS.between(rentStart, rentEnd);
+    }
 }

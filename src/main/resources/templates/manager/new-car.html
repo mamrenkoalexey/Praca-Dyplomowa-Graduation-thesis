@@ -5,24 +5,66 @@
 <head>
     <meta charset="UTF-8">
     <title>Dodaj nowy samochód</title>
+    <style>
+        .form-section {
+            background: #000;
+            border-radius: 8px;
+            border: 1px solid #6c757d;
+            padding: 30px;
+        }
+        .form-control, .form-select {
+            background: #000;
+            border: 1px solid #6c757d;
+            color: #fff;
+            border-radius: 8px;
+            padding: 12px 15px;
+        }
+        .form-control:focus, .form-select:focus {
+            background: #000;
+            border-color: #0d6efd;
+            color: #fff;
+            box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+        }
+        .form-control::placeholder {
+            color: #ffffff;
+            opacity: 0.7;
+        }
+        .form-label {
+            color: #6c757d;
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+    </style>
 </head>
-<body class="bg-dark text-light">
+<body>
 
 <div layout:fragment="content" class="bg-gray-950 text-white font-sans">
 
-    <div class="container py-5">
-        <h2 class="text-center mb-4 text-primary">Dodaj nowy samochód</h2>
+    <!-- Header Section -->
+    <section class="text-center py-4 bg-gradient-dark">
+        <div class="container">
+            <h2 class="display-5 fw-bold mb-3 gradient-heading">Dodaj Nowy Samochód</h2>
+            <p class="text-secondary fw-bold mb-0" style="font-size: 1.1rem;">
+                Wprowadź informacje o nowym pojeździe
+            </p>
+        </div>
+    </section>
 
+    <hr class="section-divider" style="margin-top: 0px; margin-bottom: 40px;">
+
+    <div class="container pb-5">
         <form th:action="@{/manager/add-car}" th:object="${newCar}" method="post"
-              class="bg-secondary p-4 rounded-4 shadow-lg">
+              class="form-section">
 
-            <div class="mb-3">
+            <div class="mb-4">
                 <div class="d-flex justify-content-between align-items-center mb-2">
-                    <label class="form-label text-light mb-0" style="font-size: 0.95rem;">Model samochodu</label>
+                    <label class="form-label mb-0">
+                        <i class="bi bi-car-front me-2"></i>Model samochodu
+                    </label>
                     <a th:href="@{/manager/add-model}"
-                       class="btn btn-sm btn-primary shadow-sm"
-                       style="font-weight: 500;">
-                        + Dodaj nowy model
+                       class="btn btn-sm btn-primary rounded-pill">
+                        <i class="bi bi-plus-circle me-1"></i>Dodaj nowy model
                     </a>
                 </div>
                 <select class="form-select" th:field="*{model}" required>
@@ -35,76 +77,100 @@
             </div>
 
             <div class="row">
-                <div class="col-md-6 mb-3">
-                    <label class="form-label text-light">Typ nadwozia</label>
+                <div class="col-md-6 mb-4">
+                    <label class="form-label">
+                        <i class="bi bi-body-text me-2"></i>Typ nadwozia
+                    </label>
                     <select class="form-select" th:field="*{bodyType}" required>
                         <option value="" disabled selected>Wybierz typ</option>
-                        <option th:each="type : ${carBodyTypes}" th:value="${type}" th:text="${type}"></option>
+                        <option th:each="type : ${carBodyTypes}" th:value="${type}" th:text="${type.displayName}"></option>
                     </select>
                 </div>
-                <div class="col-md-6 mb-3">
-                    <label class="form-label text-light">Rodzaj paliwa</label>
+                <div class="col-md-6 mb-4">
+                    <label class="form-label">
+                        <i class="bi bi-fuel-pump me-2"></i>Rodzaj paliwa
+                    </label>
                     <select class="form-select" th:field="*{fuelType}" required>
                         <option value="" disabled selected>Wybierz paliwo</option>
-                        <option th:each="fuel : ${carFuelTypes}" th:value="${fuel}" th:text="${fuel}"></option>
+                        <option th:each="fuel : ${carFuelTypes}" th:value="${fuel}" th:text="${fuel.displayName}"></option>
                     </select>
                 </div>
             </div>
 
-
             <div class="row">
-                <div class="col-md-6 mb-3">
-                    <label class="form-label text-light">Rok produkcji</label>
+                <div class="col-md-6 mb-4">
+                    <label class="form-label">
+                        <i class="bi bi-calendar-event me-2"></i>Rok produkcji
+                    </label>
                     <select class="form-select" th:field="*{productionYear}" required>
                         <option value="" disabled selected>Wybierz rok</option>
                         <option th:each="year : ${carYears}" th:value="${year}" th:text="${year}"></option>
                     </select>
                 </div>
-                <div class="col-md-6 mb-3">
-                    <label class="form-label text-light">Kolor</label>
+                <div class="col-md-6 mb-4">
+                    <label class="form-label">
+                        <i class="bi bi-palette me-2"></i>Kolor
+                    </label>
                     <input type="text" class="form-control" th:field="*{color}" placeholder="Kolor samochodu" required>
                 </div>
             </div>
 
             <div class="row">
-                <div class="col-md-6 mb-3">
-                    <label class="form-label text-light">Cena</label>
-                    <input type="number" step="0.01" class="form-control" th:field="*{price}" placeholder="Cena w PLN"
-                           required>
+                <div class="col-md-6 mb-4">
+                    <label class="form-label">
+                        <i class="bi bi-cash me-2"></i>Cena (PLN)
+                    </label>
+                    <input type="number" step="1" class="form-control" th:field="*{price}" placeholder="Cena w PLN (tylko liczby całkowite)" min="0" required>
                 </div>
-                <div class="col-md-6 mb-3">
-                    <label class="form-label text-light">Przebieg (km)</label>
+                <div class="col-md-6 mb-4">
+                    <label class="form-label">
+                        <i class="bi bi-speedometer2 me-2"></i>Przebieg (km)
+                    </label>
                     <input type="number" class="form-control" th:field="*{mileage}" placeholder="np. 15000" required>
                 </div>
             </div>
 
-            <div class="mb-3">
-                <label class="form-label text-light">Numer VIN</label>
-                <input type="text" class="form-control" th:field="*{vin}" placeholder="Wpisz numer VIN" required>
-            </div>
-            <div class="mb-3">
-                <label class="form-label text-light">Numer rejestracyjny</label>
-                <input type="text" class="form-control" th:field="*{registrationNumber}"
-                       placeholder="Wpisz numer rejestracyjny" required>
+            <div class="row">
+                <div class="col-md-6 mb-4">
+                    <label class="form-label">
+                        <i class="bi bi-upc-scan me-2"></i>Numer VIN
+                    </label>
+                    <input type="text" class="form-control" th:field="*{vin}" placeholder="Wpisz numer VIN" required>
+                </div>
+                <div class="col-md-6 mb-4">
+                    <label class="form-label">
+                        <i class="bi bi-card-text me-2"></i>Numer rejestracyjny
+                    </label>
+                    <input type="text" class="form-control" th:field="*{registrationNumber}" placeholder="Wpisz numer rejestracyjny" required>
+                </div>
             </div>
 
-            <div class="mb-3">
-                <label class="form-label text-light">Opis samochodu</label>
-                <textarea class="form-control" rows="3" th:field="*{description}"
-                          placeholder="Krótki opis samochodu"></textarea>
+            <div class="mb-4">
+                <label class="form-label">
+                    <i class="bi bi-text-left me-2"></i>Opis samochodu
+                </label>
+                <textarea class="form-control" rows="4" th:field="*{description}" placeholder="Krótki opis samochodu"></textarea>
             </div>
 
-            <div class="mb-3">
-                <label class="form-label text-light">Salon</label>
+            <div class="mb-4">
+                <label class="form-label">
+                    <i class="bi bi-building me-2"></i>Salon
+                </label>
                 <select class="form-select" th:field="*{salon}" required>
                     <option value="" disabled selected>Wybierz salon</option>
                     <option th:each="salon : ${salons}" th:value="${salon.id}" th:text="${salon.name}"></option>
                 </select>
             </div>
 
+            <hr class="section-divider my-4">
+
             <div class="text-center">
-                <button type="submit" class="btn btn-success btn-lg px-5">Zapisz</button>
-                <a href="#" onclick="goBack()" class="btn btn-outline-light btn-lg px-5 ms-3">Powrót</a>
+                <button type="submit" class="btn btn-primary btn-lg rounded-pill px-5 me-3">
+                    <i class="bi bi-check-circle me-2"></i>Zapisz
+                </button>
+                <a href="#" onclick="history.back()" class="btn btn-secondary btn-lg rounded-pill px-5">
+                    <i class="bi bi-arrow-left me-2"></i>Powrót
+                </a>
             </div>
 
         </form>

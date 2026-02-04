@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layout.html">
+<head>
+    <title>Lista Leasingów | FAST BUY CAR</title>
+</head>
+<body>
+<div layout:fragment="content" class="bg-gray-950 text-white font-sans">
+
+    <section class="container py-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="gradient-heading">Zarządzanie Leasingami</h2>
+            <a th:href="@{/seller/leases/new}" class="btn btn-primary px-4 py-2 rounded-pill">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle me-2" viewBox="0 0 16 16" style="vertical-align: middle;">
+                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                    <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/>
+                </svg>
+                Nowy Leasing
+            </a>
+        </div>
+
+        <!-- Statistics Cards -->
+        <div class="row g-3 mb-4">
+            <div class="col-md-4">
+                <div class="card bg-black border border-secondary p-4">
+                    <h5 class="text-secondary mb-2">Łączna liczba leasingów</h5>
+                    <p class="display-5 fw-bold text-primary mb-0" th:text="${totalLeases}">0</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card bg-black border border-secondary p-4">
+                    <h5 class="text-secondary mb-2">Aktywne leasingi</h5>
+                    <p class="display-5 fw-bold text-warning mb-0" th:text="${activeLeases}">0</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card bg-black border border-secondary p-4">
+                    <h5 class="text-secondary mb-2">Łączny przychód</h5>
+                    <p class="display-5 fw-bold text-success mb-0" th:text="${#numbers.formatDecimal(totalRevenue, 0, 'COMMA', 0, 'POINT') + ' PLN'}">0 PLN</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Success/Error Messages -->
+        <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <span th:text="${successMessage}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+
+        <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <span th:text="${errorMessage}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+
+        <!-- Leases Table -->
+        <div class="card bg-black border border-secondary">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-dark table-hover">
+                        <thead>
+                            <tr>
+                                <th>Numer umowy</th>
+                                <th>Samochód</th>
+                                <th>Klient</th>
+                                <th>Okres</th>
+                                <th>Rata miesięczna</th>
+                                <th>Łączna wartość</th>
+                                <th>Status</th>
+                                <th>Akcje</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:if="${#lists.isEmpty(leases)}">
+                                <td colspan="8" class="text-center text-secondary py-5">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" class="bi bi-inbox mb-3" viewBox="0 0 16 16">
+                                        <path d="M4.98 4a.5.5 0 0 0-.39.188L1.54 8H6a.5.5 0 0 1 .5.5 1.5 1.5 0 1 0 3 0A.5.5 0 0 1 10 8h4.46l-3.05-3.812A.5.5 0 0 0 11.02 4zm9.954 5H10.45a2.5 2.5 0 0 1-4.9 0H1.066l.32 2.562a.5.5 0 0 0 .497.438h12.234a.5.5 0 0 0 .496-.438zM3.809 3.563A1.5 1.5 0 0 1 4.981 3h6.038a1.5 1.5 0 0 1 1.172.563l3.7 4.625a.5.5 0 0 1 .105.374l-.39 3.124A1.5 1.5 0 0 1 14.117 13H1.883a1.5 1.5 0 0 1-1.489-1.314l-.39-3.124a.5.5 0 0 1 .106-.374z"/>
+                                    </svg>
+                                    <div>Brak leasingów w systemie</div>
+                                    <a th:href="@{/seller/leases/new}" class="btn btn-sm btn-primary mt-3">Utwórz pierwszy leasing</a>
+                                </td>
+                            </tr>
+                            <tr th:each="lease : ${leases}">
+                                <td>
+                                    <span class="fw-bold" th:text="${lease.contractNumber}">LEASE-ABC123</span>
+                                    <br>
+                                    <small class="text-secondary" th:text="'ID: ' + ${lease.id}">ID: 1</small>
+                                </td>
+                                <td>
+                                    <span th:text="${lease.car.model.brand.name + ' ' + lease.car.model.name}">Toyota Corolla</span>
+                                    <br>
+                                    <small class="text-secondary" th:text="'Rok: ' + ${lease.car.productionYear}">Rok: 2020</small>
+                                </td>
+                                <td th:text="${lease.client.firstName + ' ' + lease.client.lastName}">Jan Kowalski</td>
+                                <td>
+                                    <span th:text="${#temporals.format(lease.startDate, 'dd-MM-yyyy')}">01-01-2024</span>
+                                    <br>
+                                    <small class="text-secondary">do</small>
+                                    <br>
+                                    <span th:text="${#temporals.format(lease.endDate, 'dd-MM-yyyy')}">01-12-2024</span>
+                                    <br>
+                                    <small class="text-info" th:text="'(' + ${lease.leaseDurationInMonths} + ' mies.)'"></small>
+                                </td>
+                                <td class="fw-bold" th:text="${lease.formattedMonthlyPayment + ' PLN'}">2000.00 PLN</td>
+                                <td class="fw-bold text-success" th:text="${lease.formattedTotalValue + ' PLN'}">50000.00 PLN</td>
+                                <td>
+                                    <span th:class="${'badge ' +
+                                        (lease.status.name() == 'ACTIVE' ? 'bg-success' :
+                                         lease.status.name() == 'PENDING' ? 'bg-warning' :
+                                         lease.status.name() == 'COMPLETED' ? 'bg-info' :
+                                         'bg-secondary')}"
+                                          th:text="${lease.status.displayName}">Aktywny</span>
+                                </td>
+                                <td>
+                                    <a th:href="@{/seller/leases/{id}(id=${lease.id})}" class="btn btn-sm btn-outline-primary">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi bi-eye me-1" viewBox="0 0 16 16" style="vertical-align: middle;">
+                                            <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8M1.173 8a13 13 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5s3.879 1.168 5.168 2.457A13 13 0 0 1 14.828 8q-.086.13-.195.288c-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5s-3.879-1.168-5.168-2.457A13 13 0 0 1 1.172 8z"/>
+                                            <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5M4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0"/>
+                                        </svg>
+                                        Szczegóły
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</div>
+</body>
+</html>

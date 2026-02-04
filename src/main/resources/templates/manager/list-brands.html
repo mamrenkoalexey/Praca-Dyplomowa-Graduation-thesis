@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layout.html">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Zarządzaj markami</title>
+    <style>
+        .filter-section {
+            background: #000;
+            border-radius: 8px;
+            border: 1px solid #6c757d;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+        .search-box {
+            border-radius: 8px;
+            border: 1px solid #6c757d;
+            background: #000;
+            color: #fff;
+            padding: 12px 20px;
+        }
+        .search-box:focus {
+            background: #000;
+            border-color: #0d6efd;
+            color: #fff;
+            box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+        }
+        .search-box::placeholder {
+            color: #ffffff;
+            opacity: 0.7;
+        }
+        .brand-card {
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+        .brand-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5) !important;
+        }
+        .brand-logo {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, rgba(13, 110, 253, 0.8) 0%, rgba(13, 110, 253, 0.5) 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: white;
+            margin: 20px auto;
+            border: 3px solid rgba(13, 110, 253, 0.3);
+        }
+        .stats-row {
+            background: rgba(13, 110, 253, 0.1);
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+            border: 1px solid rgba(13, 110, 253, 0.2);
+        }
+        .card-link {
+            text-decoration: none;
+            color: inherit;
+        }
+    </style>
+</head>
+<body>
+<div layout:fragment="content" class="bg-gray-950 text-white font-sans">
+
+    <!-- Header Section -->
+    <section class="text-center py-4 bg-gradient-dark">
+        <div class="container">
+            <h2 class="display-5 fw-bold mb-3 gradient-heading">Zarządzaj Markami</h2>
+            <p class="text-secondary fw-bold mb-0" style="font-size: 1.1rem;">
+                Łącznie: <span class="text-primary" th:text="${#lists.size(brands)}">0</span> marek w bazie
+            </p>
+        </div>
+    </section>
+
+    <hr class="section-divider" style="margin-top: 0px; margin-bottom: 40px;">
+
+    <section class="container pb-5">
+        <!-- Add Button -->
+        <div class="text-end mb-4">
+            <a th:href="@{/manager/add-brand}" class="btn btn-primary btn-lg rounded-pill px-4">
+                <i class="bi bi-plus-circle me-2"></i>Dodaj nową markę
+            </a>
+        </div>
+
+        <!-- Filter Section -->
+        <div class="filter-section">
+            <label class="form-label text-secondary small mb-2">
+                <i class="bi bi-search me-1"></i>Wyszukaj markę
+            </label>
+            <input type="text" id="searchInput" class="form-control search-box"
+                   placeholder="Szukaj po nazwie marki, kraju pochodzenia...">
+        </div>
+
+        <!-- Brands Grid View -->
+        <div class="row g-4" id="brandsGrid">
+            <div class="col-sm-6 col-lg-3 brand-item" th:each="brand : ${brands}"
+                 th:attr="data-name=${brand.name}, data-country=${brand.country}">
+                <a th:href="@{/manager/update/brand/{id}(id=${brand.id})}" class="card-link">
+                    <div class="card bg-black border border-secondary h-100 shadow-sm brand-card">
+                        <div class="card-body text-center">
+                            <!-- Brand Logo Circle -->
+                            <div class="brand-logo" th:text="${#strings.substring(brand.name, 0, 1)}">T</div>
+
+                            <!-- Brand Name -->
+                            <h4 class="card-title text-light mb-2" th:text="${brand.name}">Toyota</h4>
+
+                            <!-- Country -->
+                            <p class="text-secondary small mb-3">
+                                <i class="bi bi-geo-alt-fill me-1"></i>
+                                <span th:text="${brand.country}">Japonia</span>
+                            </p>
+
+                            <!-- Stats -->
+                            <div class="stats-row">
+                                <div class="row text-center">
+                                    <div class="col-12">
+                                        <div class="text-primary fw-bold fs-4" th:text="${brand.models != null ? brand.models.size() : 0}">12</div>
+                                        <div class="text-secondary small">Modeli</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- ID Badge -->
+                            <div class="mt-3">
+                                <span class="badge bg-secondary text-light small" th:text="'ID: ' + ${brand.id}">ID: 1</span>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <!-- No Results Message -->
+        <div id="noResults" class="text-center py-5" style="display: none;">
+            <i class="bi bi-search text-secondary" style="font-size: 3rem;"></i>
+            <h4 class="text-secondary mt-3">Nie znaleziono marek</h4>
+            <p class="text-secondary">Spróbuj zmienić kryteria wyszukiwania</p>
+        </div>
+    </section>
+
+    <script th:inline="javascript">
+        document.getElementById('searchInput').addEventListener('keyup', filterBrands);
+
+        function filterBrands() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const gridItems = Array.from(document.querySelectorAll('.brand-item'));
+
+            let visibleCount = 0;
+
+            gridItems.forEach(item => {
+                const name = item.dataset.name.toLowerCase();
+                const country = item.dataset.country.toLowerCase();
+
+                const matches = name.includes(searchTerm) || country.includes(searchTerm);
+                item.style.display = matches ? '' : 'none';
+                if (matches) visibleCount++;
+            });
+
+            document.getElementById('noResults').style.display = visibleCount === 0 ? 'block' : 'none';
+        }
+    </script>
+</div>
+</body>
+</html>

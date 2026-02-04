@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layout.html">
+<head>
+    <title>Szczegoly Wynajmu | FAST BUY CAR</title>
+</head>
+<body>
+<div layout:fragment="content" class="bg-gray-950 text-white font-sans">
+
+    <section class="container py-5">
+        <div class="mb-4">
+            <a th:href="@{/seller/rents}" class="btn btn-outline-secondary px-4 py-2 rounded-pill">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left me-2" viewBox="0 0 16 16" style="vertical-align: middle;">
+                    <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8"/>
+                </svg>
+                Powrot do listy wynajmow
+            </a>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="gradient-heading">Szczegoly Wynajmu</h2>
+            <span th:class="${'badge fs-5 ' +
+                (rent.status.name() == 'ACTIVE' ? 'bg-success' :
+                 rent.status.name() == 'COMPLETED' ? 'bg-info' :
+                 rent.status.name() == 'LATE_RETURN' ? 'bg-warning' :
+                 'bg-secondary')}"
+                  th:text="${rent.status.displayName}">Status</span>
+        </div>
+
+        <!-- Success/Error Messages -->
+        <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <span th:text="${successMessage}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+
+        <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <span th:text="${errorMessage}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+
+        <div class="row g-4">
+            <!-- Rent Information -->
+            <div class="col-lg-8">
+                <div class="card bg-black border border-secondary p-4 mb-4">
+                    <h4 class="text-light mb-4">Informacje o Wynajmie</h4>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <p class="text-secondary mb-1">Numer wynajmu</p>
+                            <p class="text-light fw-bold fs-5" th:text="${rent.rentNumber}">RENT-ABC123</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p class="text-secondary mb-1">Data rozpoczecia</p>
+                            <p class="text-light fw-bold" th:text="${#temporals.format(rent.rentStart, 'dd MMMM yyyy', new java.util.Locale('pl'))}">01 stycznia 2024</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p class="text-secondary mb-1">Planowana data zwrotu</p>
+                            <p class="text-light fw-bold" th:text="${#temporals.format(rent.rentEnd, 'dd MMMM yyyy', new java.util.Locale('pl'))}">07 stycznia 2024</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p class="text-secondary mb-1">Okres wynajmu</p>
+                            <p class="text-light fw-bold" th:text="${rent.rentDurationInDays + ' dni'}">7 dni</p>
+                        </div>
+                        <div class="col-md-6" th:if="${rent.status.name() != 'ACTIVE'}">
+                            <p class="text-secondary mb-1">Faktyczna data zwrotu</p>
+                            <p th:class="${rent.actualReturnDate.isAfter(rent.rentEnd) ? 'text-warning fw-bold' : 'text-light fw-bold'}"
+                               th:text="${#temporals.format(rent.actualReturnDate, 'dd MMMM yyyy', new java.util.Locale('pl'))}">08 stycznia 2024</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p class="text-secondary mb-1">Stawka dzienna</p>
+                            <p class="text-primary fw-bold fs-5" th:text="${rent.formattedDailyRate + ' PLN'}">200.00 PLN</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p class="text-secondary mb-1">Kaucja</p>
+                            <p class="text-info fw-bold fs-5" th:text="${rent.formattedDeposit + ' PLN'}">1000.00 PLN</p>
+                        </div>
+                        <div class="col-md-12">
+                            <hr class="border-secondary">
+                        </div>
+                        <div class="col-md-6">
+                            <p class="text-secondary mb-1">Laczna kwota</p>
+                            <p class="text-success fw-bold fs-4" th:text="${rent.formattedTotalAmount + ' PLN'}">1400.00 PLN</p>
+                        </div>
+                    </div>
+
+                    <!-- Notes -->
+                    <div th:if="${rent.notes}" class="mt-4">
+                        <p class="text-secondary mb-2">Notatki</p>
+                        <p class="text-light" style="white-space: pre-wrap;" th:text="${rent.notes}">Notatki...</p>
+                    </div>
+                </div>
+
+                <!-- Car Information -->
+                <div class="card bg-black border border-secondary p-4 mb-4">
+                    <h4 class="text-light mb-4">Samochod</h4>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <img th:src="@{/cars/{img}(img=${rent.car.carImage ?: 'default.png'})}"
+                                 class="img-fluid rounded shadow"
+                                 style="width: 100%; height: 150px; object-fit: cover;">
+                        </div>
+                        <div class="col-md-8">
+                            <h5 class="text-light mb-3" th:text="${rent.car.model.brand.name + ' ' + rent.car.model.name}">Toyota Corolla</h5>
+                            <div class="row g-2">
+                                <div class="col-6">
+                                    <p class="text-secondary mb-1 small">Rok produkcji</p>
+                                    <p class="text-light" th:text="${rent.car.productionYear}">2020</p>
+                                </div>
+                                <div class="col-6">
+                                    <p class="text-secondary mb-1 small">Przebieg</p>
+                                    <p class="text-light" th:text="${#numbers.formatDecimal(rent.car.mileage, 0, 'COMMA', 0, 'POINT')} + ' km'">50000 km</p>
+                                </div>
+                                <div class="col-6">
+                                    <p class="text-secondary mb-1 small">VIN</p>
+                                    <p class="text-light" th:text="${rent.car.vin}">ABC123456789</p>
+                                </div>
+                                <div class="col-6">
+                                    <p class="text-secondary mb-1 small">Kolor</p>
+                                    <p class="text-light" th:text="${rent.car.color}">Czarny</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Client Information -->
+                <div class="card bg-black border border-secondary p-4 mb-4">
+                    <h4 class="text-light mb-4">Klient</h4>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <p class="text-secondary mb-1">Imie i nazwisko</p>
+                            <p class="text-light fw-bold" th:text="${rent.client.firstName + ' ' + rent.client.lastName}">Jan Kowalski</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p class="text-secondary mb-1">Email</p>
+                            <p class="text-light" th:text="${rent.client.email}">jan@example.com</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p class="text-secondary mb-1">Telefon</p>
+                            <p class="text-light" th:text="${rent.client.phone}">+48 123 456 789</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p class="text-secondary mb-1">Pracownik odpowiedzialny</p>
+                            <p class="text-light" th:text="${rent.employee.firstName + ' ' + rent.employee.lastName}">Anna Nowak</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="col-lg-4">
+                <div class="card bg-black border border-secondary p-4 mb-4">
+                    <h5 class="text-light mb-3">Akcje</h5>
+
+                    <!-- Complete Button (normal return) -->
+                    <form th:if="${rent.status.name() == 'ACTIVE'}"
+                          th:action="@{/seller/rents/{id}/complete(id=${rent.id})}"
+                          method="post" class="mb-2">
+                        <button type="submit" class="btn btn-success w-100">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-circle me-2" viewBox="0 0 16 16" style="vertical-align: middle;">
+                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                                <path d="m10.97 4.97-.02.022-3.473 4.425-2.093-2.094a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05"/>
+                            </svg>
+                            Zakoncz Wynajem (dzisiaj)
+                        </button>
+                    </form>
+
+                    <!-- Complete with custom date Button -->
+                    <div th:if="${rent.status.name() == 'ACTIVE'}" class="mb-2">
+                        <button type="button" class="btn btn-warning w-100" data-bs-toggle="modal" data-bs-target="#completeModal">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-calendar-check me-2" viewBox="0 0 16 16" style="vertical-align: middle;">
+                                <path d="M10.854 7.146a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L7.5 9.793l2.646-2.647a.5.5 0 0 1 .708 0"/>
+                                <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5M1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4z"/>
+                            </svg>
+                            Zakoncz z inna data
+                        </button>
+                    </div>
+
+                    <!-- Cancel Button -->
+                    <div th:if="${rent.status.name() == 'ACTIVE'}">
+                        <button type="button" class="btn btn-danger w-100" data-bs-toggle="modal" data-bs-target="#cancelModal">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-circle me-2" viewBox="0 0 16 16" style="vertical-align: middle;">
+                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                                <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708"/>
+                            </svg>
+                            Anuluj Wynajem
+                        </button>
+                    </div>
+
+                    <!-- Status info for completed/cancelled -->
+                    <div th:if="${rent.status.name() != 'ACTIVE'}" class="text-center py-3">
+                        <p class="text-secondary mb-0">Ten wynajem zostal juz zakonczony</p>
+                    </div>
+                </div>
+
+                <!-- Summary Card -->
+                <div class="card bg-black border border-secondary p-4">
+                    <h5 class="text-light mb-3">Podsumowanie finansowe</h5>
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="text-secondary">Stawka dzienna:</span>
+                            <span class="text-light" th:text="${rent.formattedDailyRate + ' PLN'}">200.00 PLN</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="text-secondary">Liczba dni:</span>
+                            <span class="text-light" th:text="${rent.rentDurationInDays}">7</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="text-secondary">Kaucja:</span>
+                            <span class="text-info" th:text="${rent.formattedDeposit + ' PLN'}">1000.00 PLN</span>
+                        </div>
+                        <hr class="border-secondary">
+                        <div class="d-flex justify-content-between">
+                            <span class="text-light fw-bold">Laczna kwota:</span>
+                            <span class="text-success fw-bold fs-5" th:text="${rent.formattedTotalAmount + ' PLN'}">1400.00 PLN</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Complete with custom date Modal -->
+    <div class="modal fade" id="completeModal" tabindex="-1" aria-labelledby="completeModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content bg-dark text-light">
+                <div class="modal-header border-secondary">
+                    <h5 class="modal-title" id="completeModalLabel">Zakoncz Wynajem</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form th:action="@{/seller/rents/{id}/complete-late(id=${rent.id})}" method="post">
+                    <div class="modal-body">
+                        <p class="text-warning">Podaj faktyczna date zwrotu samochodu:</p>
+                        <div class="mb-3">
+                            <label for="actualReturnDate" class="form-label">Data zwrotu <span class="text-danger">*</span></label>
+                            <input type="date" class="form-control input-dark" id="actualReturnDate" name="actualReturnDate" required>
+                        </div>
+                        <div class="alert alert-warning" role="alert">
+                            <small>Jezeli data zwrotu jest pozniejsza niz planowana (<span th:text="${#temporals.format(rent.rentEnd, 'dd-MM-yyyy')}"></span>), zostanie naliczona dodatkowa oplata (150% stawki dziennej za kazdy dzien opoznienia).</small>
+                        </div>
+                    </div>
+                    <div class="modal-footer border-secondary">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Anuluj</button>
+                        <button type="submit" class="btn btn-warning">Zakoncz Wynajem</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cancel Modal -->
+    <div class="modal fade" id="cancelModal" tabindex="-1" aria-labelledby="cancelModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content bg-dark text-light">
+                <div class="modal-header border-secondary">
+                    <h5 class="modal-title" id="cancelModalLabel">Anuluj Wynajem</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form th:action="@{/seller/rents/{id}/cancel(id=${rent.id})}" method="post">
+                    <div class="modal-body">
+                        <p class="text-warning">Czy na pewno chcesz anulowac ten wynajem?</p>
+                        <div class="mb-3">
+                            <label for="reason" class="form-label">Powod anulowania <span class="text-danger">*</span></label>
+                            <textarea class="form-control input-dark" id="reason" name="reason" rows="3" required></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer border-secondary">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Zamknij</button>
+                        <button type="submit" class="btn btn-danger">Anuluj Wynajem</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<th:block layout:fragment="scripts">
+    <script>
+        $(document).ready(function() {
+            // Set default date for return date input
+            const today = new Date().toISOString().split('T')[0];
+            $('#actualReturnDate').val(today);
+        });
+    </script>
+</th:block>
+</body>
+</html>

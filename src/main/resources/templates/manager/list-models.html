@@ -6,45 +6,178 @@
 <head>
     <meta charset="UTF-8">
     <title>Zarządzaj modelami</title>
+    <style>
+        .filter-section {
+            background: #000;
+            border-radius: 8px;
+            border: 1px solid #6c757d;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+        .search-box, .filter-select {
+            border-radius: 8px;
+            border: 1px solid #6c757d;
+            background: #000;
+            color: #fff;
+            padding: 12px 20px;
+        }
+        .search-box:focus, .filter-select:focus {
+            background: #000;
+            border-color: #0d6efd;
+            color: #fff;
+            box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+        }
+        .search-box::placeholder {
+            color: #ffffff;
+            opacity: 0.7;
+        }
+        .model-card {
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+        .model-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5) !important;
+        }
+        .info-badge {
+            display: inline-block;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            background: rgba(13, 110, 253, 0.2);
+            color: #0d6efd;
+            border: 1px solid rgba(13, 110, 253, 0.3);
+        }
+        .card-link {
+            text-decoration: none;
+            color: inherit;
+        }
+    </style>
 </head>
 <body>
 <div layout:fragment="content" class="bg-gray-950 text-white font-sans">
+
+    <!-- Header Section -->
+    <section class="text-center py-4 bg-gradient-dark">
+        <div class="container">
+            <h2 class="display-5 fw-bold mb-3 gradient-heading">Zarządzaj Modelami</h2>
+            <p class="text-secondary fw-bold mb-0" style="font-size: 1.1rem;">
+                Łącznie: <span class="text-primary" th:text="${#lists.size(models)}">0</span> modeli w bazie
+            </p>
+        </div>
+    </section>
+
+    <hr class="section-divider" style="margin-top: 0px; margin-bottom: 40px;">
+
     <section class="container pb-5">
-        <div class="d-flex justify-content-between align-items-center py-4">
-            <h1 class="text-light">Zarządzaj modelami</h1>
-            <a th:href="@{/manager/add-model}" class="btn btn-success btn-lg">
-                + Dodaj nowy model
+        <!-- Add Button -->
+        <div class="text-end mb-4">
+            <a th:href="@{/manager/add-model}" class="btn btn-primary btn-lg rounded-pill px-4">
+                <i class="bi bi-plus-circle me-2"></i>Dodaj nowy model
             </a>
         </div>
 
-        <div class="row g-4">
-            <div class="col-sm-6 col-lg-4" th:each="model : ${models}">
-                <div class="card bg-black border border-secondary h-100 shadow-sm car-card">
-
-                    <div class="image-wrapper">
-                        <img th:src="@{/model.png}" alt="Model image" class="card-img-top">
-                        <a th:href="@{/manager/update/model/{id}(id=${model.id})}"
-                           class="btn btn-primary btn-details">Wprowadź zmiany</a>
-                    </div>
-
-                    <div class="card-body">
-                        <h3 class="card-title text-light"
-                            th:text="${model.brand.name + ' ' + model.name}">Nazwa modelu</h3>
-
-                        <p class="card-text text-secondary"
-                           th:text="'Generacja: ' + ${model.generation}">Generacja</p>
-
-                        <p class="card-text text-secondary"
-                           th:text="'Produkcja: ' + ${model.yearFrom} + ' - ' + ${model.yearTo}">Lata produkcji</p>
-
-                        <p class="text-muted small"
-                           th:text="'Liczba samochodów: ' + ${#lists.size(model.cars)}">0 samochodów</p>
-                    </div>
-
+        <!-- Filter Section -->
+        <div class="filter-section">
+            <div class="row g-3">
+                <div class="col-md-8">
+                    <label class="form-label text-secondary small mb-2">
+                        <i class="bi bi-search me-1"></i>Wyszukaj model
+                    </label>
+                    <input type="text" id="searchInput" class="form-control search-box"
+                           placeholder="Szukaj po marce, modelu, generacji...">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label text-secondary small mb-2">
+                        <i class="bi bi-funnel me-1"></i>Filtruj po marce
+                    </label>
+                    <select id="brandFilter" class="form-select filter-select">
+                        <option value="">Wszystkie marki</option>
+                        <option th:each="brand : ${brands}" th:value="${brand.name}" th:text="${brand.name}">Brand</option>
+                    </select>
                 </div>
             </div>
         </div>
+
+        <!-- Models Grid View -->
+        <div class="row g-4" id="modelsGrid">
+            <div class="col-sm-6 col-lg-4 model-item" th:each="model : ${models}"
+                 th:attr="data-brand=${model.brand.name}, data-name=${model.name},
+                          data-generation=${model.generation}, data-cars=${#lists.size(model.cars)}">
+                <a th:href="@{/manager/update/model/{id}(id=${model.id})}" class="card-link">
+                    <div class="card bg-black border border-secondary h-100 shadow-sm model-card">
+                        <div class="position-relative">
+                            <img th:src="@{/model.png}" alt="Model image" class="card-img-top"
+                                 style="height: 200px; object-fit: cover;">
+
+                            <span class="position-absolute top-0 end-0 m-2 badge bg-primary" style="font-size: 0.9rem;">
+                                <span th:text="${#lists.size(model.cars)}">0</span> aut
+                            </span>
+                        </div>
+
+                        <div class="card-body">
+                            <h5 class="card-title text-light mb-3"
+                                th:text="${model.brand.name + ' ' + model.name}">Nazwa modelu</h5>
+
+                            <div class="mb-3">
+                                <span class="info-badge">
+                                    <i class="bi bi-tag me-1"></i>
+                                    <span th:text="${model.generation}">Generacja</span>
+                                </span>
+                            </div>
+
+                            <div class="d-flex justify-content-between text-secondary small">
+                                <span>
+                                    <i class="bi bi-calendar-range me-1"></i>
+                                    <span th:text="${model.yearFrom} + ' - ' + ${model.yearTo}">2015-2020</span>
+                                </span>
+                                <span>
+                                    ID: <span th:text="${model.id}">1</span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <!-- No Results Message -->
+        <div id="noResults" class="text-center py-5" style="display: none;">
+            <i class="bi bi-search text-secondary" style="font-size: 3rem;"></i>
+            <h4 class="text-secondary mt-3">Nie znaleziono modeli</h4>
+            <p class="text-secondary">Spróbuj zmienić kryteria wyszukiwania</p>
+        </div>
     </section>
+
+    <script th:inline="javascript">
+        document.getElementById('searchInput').addEventListener('keyup', filterModels);
+        document.getElementById('brandFilter').addEventListener('change', filterModels);
+
+        function filterModels() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const brandFilter = document.getElementById('brandFilter').value.toLowerCase();
+            const gridItems = Array.from(document.querySelectorAll('.model-item'));
+
+            let visibleCount = 0;
+
+            gridItems.forEach(item => {
+                const brand = item.dataset.brand.toLowerCase();
+                const name = item.dataset.name.toLowerCase();
+                const generation = item.dataset.generation.toLowerCase();
+
+                const matchesSearch = brand.includes(searchTerm) ||
+                                     name.includes(searchTerm) ||
+                                     generation.includes(searchTerm);
+                const matchesBrand = !brandFilter || brand === brandFilter;
+
+                const matches = matchesSearch && matchesBrand;
+                item.style.display = matches ? '' : 'none';
+                if (matches) visibleCount++;
+            });
+
+            document.getElementById('noResults').style.display = visibleCount === 0 ? 'block' : 'none';
+        }
+    </script>
 </div>
 </body>
 </html>

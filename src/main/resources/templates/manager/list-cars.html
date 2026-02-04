@@ -6,44 +6,152 @@
 <head>
     <meta charset="UTF-8">
     <title>Zarządzaj samochodami</title>
+    <style>
+        .filter-section {
+            background: #000;
+            border-radius: 8px;
+            border: 1px solid #6c757d;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+        .search-box {
+            border-radius: 8px;
+            border: 1px solid #6c757d;
+            background: #000;
+            color: #fff;
+            padding: 12px 20px;
+        }
+        .search-box:focus {
+            background: #000;
+            border-color: #0d6efd;
+            color: #fff;
+            box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+        }
+        .search-box::placeholder {
+            color: #ffffff;
+            opacity: 0.7;
+        }
+        .car-card {
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+        .car-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5) !important;
+        }
+        .card-link {
+            text-decoration: none;
+            color: inherit;
+        }
+    </style>
 </head>
 <body>
 <div layout:fragment="content" class="bg-gray-950 text-white font-sans">
-    <section class="container pb-5">
-        <div class="d-flex justify-content-between align-items-center py-4">
-            <h1 class="text-light">Zarządzaj Samochodami</h1>
-            <a th:href="@{/manager/add-car}" class="btn btn-success btn-lg">
-                + Dodaj nowy samochod
-            </a>
-        </div>
-        <div class="row g-4">
 
-            <div class="col-sm-6 col-lg-4" th:each="car : ${cars}">
-                <div class="card bg-black border border-secondary h-100 shadow-sm car-card">
-
-                    <div class="image-wrapper">
-                        <img th:src="@{/cars/{img}(img=${car.carImage ?: 'default.png'})}"
-                             class="img-fluid rounded shadow"
-                             style="width: 100%; height: 220px; object-fit: cover;">
-                        <a th:href="@{/manager/update/car/{id}(id=${car.id})}"
-                           class="btn btn-primary btn-details">Wprowadź zmiany</a>
-                    </div>
-
-                    <div class="card-body">
-                        <h3 class="card-title text-light"
-                            th:text="${car.model.brand.name + ' ' + car.model.name}">Nazwa</h3>
-                        <p class="card-text text-secondary"
-                           th:text="'Rok: ' + ${car.productionYear} + ' Przebieg: ' + ${car.mileage} + ' km'">
-                            Dodatkowa
-                            informacja</p>
-                        <p class="text-primary fw-semibold fs-5 mb-3" th:text="${car.price + ' PLN'}">Cena</p>
-                    </div>
-
-                </div>
-            </div>
+    <!-- Header Section -->
+    <section class="text-center py-4 bg-gradient-dark">
+        <div class="container">
+            <h2 class="display-5 fw-bold mb-3 gradient-heading">Zarządzaj Samochodami</h2>
+            <p class="text-secondary fw-bold mb-0" style="font-size: 1.1rem;">
+                Łącznie: <span class="text-primary" th:text="${#lists.size(cars)}">0</span> samochodów w bazie
+            </p>
         </div>
     </section>
 
+    <hr class="section-divider" style="margin-top: 0px; margin-bottom: 40px;">
+
+    <section class="container pb-5">
+        <!-- Add Button -->
+        <div class="text-end mb-4">
+            <a th:href="@{/manager/add-car}" class="btn btn-primary btn-lg rounded-pill px-4">
+                <i class="bi bi-plus-circle me-2"></i>Dodaj nowy samochód
+            </a>
+        </div>
+
+        <!-- Filter Section -->
+        <div class="filter-section">
+            <label class="form-label text-secondary small mb-2">
+                <i class="bi bi-search me-1"></i>Wyszukaj samochód
+            </label>
+            <input type="text" id="searchInput" class="form-control search-box"
+                   placeholder="Szukaj po marce, modelu, roku...">
+        </div>
+
+        <!-- Cars Grid View -->
+        <div class="row g-4" id="carsGrid">
+            <div class="col-sm-6 col-lg-4 car-item" th:each="car : ${cars}"
+                 th:attr="data-brand=${car.model.brand.name}, data-model=${car.model.name},
+                          data-year=${car.productionYear}, data-price=${car.price},
+                          data-mileage=${car.mileage}">
+                <a th:href="@{/manager/update/car/{id}(id=${car.id})}" class="card-link">
+                    <div class="card bg-black border border-secondary h-100 shadow-sm car-card">
+                        <div class="image-wrapper">
+                            <img th:src="@{/cars/{img}(img=${car.carImage ?: 'default.png'})}"
+                                 class="img-fluid rounded-top"
+                                 style="width: 100%; height: 220px; object-fit: cover;"
+                                 th:alt="${car.model.brand.name + ' ' + car.model.name}">
+                        </div>
+
+                        <div class="card-body">
+                            <h5 class="card-title text-light mb-2"
+                                th:text="${car.model.brand.name + ' ' + car.model.name}">Nazwa</h5>
+
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="text-secondary small">
+                                    <i class="bi bi-calendar3 me-1"></i>
+                                    <span th:text="${car.productionYear}">2020</span>
+                                </span>
+                                <span class="text-secondary small">
+                                    <i class="bi bi-speedometer2 me-1"></i>
+                                    <span th:text="${car.mileage + ' km'}">50000 km</span>
+                                </span>
+                            </div>
+
+                            <div class="d-flex justify-content-between align-items-center mt-3">
+                                <p class="text-primary fw-bold fs-5 mb-0" th:text="${car.formattedPrice + ' PLN'}">Cena</p>
+                                <span class="text-secondary small" th:text="'ID: ' + ${car.id}">ID: 1</span>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <!-- No Results Message -->
+        <div id="noResults" class="text-center py-5" style="display: none;">
+            <i class="bi bi-search text-secondary" style="font-size: 3rem;"></i>
+            <h4 class="text-secondary mt-3">Nie znaleziono samochodów</h4>
+            <p class="text-secondary">Spróbuj zmienić kryteria wyszukiwania</p>
+        </div>
+    </section>
+
+    <script th:inline="javascript">
+        document.getElementById('searchInput').addEventListener('keyup', function() {
+            filterCars();
+        });
+
+        function filterCars() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const carItems = Array.from(document.querySelectorAll('.car-item'));
+
+            let visibleCount = 0;
+
+            carItems.forEach(item => {
+                const brand = item.dataset.brand.toLowerCase();
+                const model = item.dataset.model.toLowerCase();
+                const year = item.dataset.year.toLowerCase();
+
+                const matches = brand.includes(searchTerm) ||
+                               model.includes(searchTerm) ||
+                               year.includes(searchTerm);
+
+                item.style.display = matches ? '' : 'none';
+                if (matches) visibleCount++;
+            });
+
+            document.getElementById('noResults').style.display = visibleCount === 0 ? 'block' : 'none';
+        }
+    </script>
 </div>
 </body>
 </html>

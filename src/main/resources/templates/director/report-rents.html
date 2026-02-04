@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layout.html">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Raport wynajmow</title>
+    <style>
+        .filter-section {
+            background: #000;
+            border-radius: 8px;
+            border: 1px solid #6c757d;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+        .search-box {
+            border-radius: 8px;
+            border: 1px solid #6c757d;
+            background: #000;
+            color: #fff;
+            padding: 12px 20px;
+        }
+        .search-box:focus {
+            background: #000;
+            border-color: #0d6efd;
+            color: #fff;
+            box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+        }
+        .search-box::placeholder {
+            color: #ffffff;
+            opacity: 0.7;
+        }
+        .stat-card {
+            background: linear-gradient(135deg, #000 0%, #1a1a1a 100%);
+            border-radius: 12px;
+            border: 1px solid #6c757d;
+            padding: 20px;
+        }
+        .table-dark-custom {
+            background: #000;
+        }
+        .table-dark-custom th {
+            background: #1a1a1a;
+            border-color: #6c757d;
+            color: #fff;
+        }
+        .table-dark-custom td {
+            background: #000;
+            border-color: #333;
+            color: #fff;
+        }
+        .table-dark-custom tbody tr:hover td {
+            background: #1a1a1a;
+        }
+    </style>
+</head>
+<body>
+<div layout:fragment="content" class="bg-gray-950 text-white font-sans">
+
+    <section class="text-center py-4 bg-gradient-dark">
+        <div class="container">
+            <h2 class="display-5 fw-bold mb-3 gradient-heading">Raport Wynajmow</h2>
+            <p class="text-secondary fw-bold mb-0" style="font-size: 1.1rem;">
+                Lista wszystkich transakcji wynajmu samochodow
+            </p>
+        </div>
+    </section>
+
+    <hr class="section-divider" style="margin-top: 0px; margin-bottom: 40px;">
+
+    <section class="container pb-5">
+        <!-- Back Button -->
+        <div class="mb-4">
+            <button onclick="goBack()" class="btn btn-outline-secondary px-4 py-2 fw-semibold rounded-pill shadow-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left me-2" viewBox="0 0 16 16" style="vertical-align: middle;">
+                    <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8"/>
+                </svg>
+                Powrot
+            </button>
+        </div>
+
+        <!-- Stats Summary -->
+        <div class="row g-4 mb-4">
+            <div class="col-md-4">
+                <div class="stat-card h-100">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                            <div class="text-secondary small text-uppercase">Wszystkie wynajmy</div>
+                            <div class="fs-2 fw-bold text-warning" th:text="${totalRents}">0</div>
+                        </div>
+                        <i class="bi bi-key text-warning" style="font-size: 2.5rem; opacity: 0.5;"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stat-card h-100">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                            <div class="text-secondary small text-uppercase">Aktywne wynajmy</div>
+                            <div class="fs-2 fw-bold text-success" th:text="${activeRents}">0</div>
+                        </div>
+                        <i class="bi bi-check-circle text-success" style="font-size: 2.5rem; opacity: 0.5;"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stat-card h-100">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                            <div class="text-secondary small text-uppercase">Przychod z wynajmow</div>
+                            <div class="fs-2 fw-bold text-primary"
+                                 th:text="${#numbers.formatDecimal(totalRevenue, 0, 'COMMA', 2, 'POINT')} + ' PLN'">0 PLN</div>
+                        </div>
+                        <i class="bi bi-cash-stack text-primary" style="font-size: 2.5rem; opacity: 0.5;"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Search Filter -->
+        <div class="filter-section">
+            <label class="form-label text-secondary small mb-2">
+                <i class="bi bi-search me-1"></i>Wyszukaj wynajem
+            </label>
+            <input type="text" id="searchInput" class="form-control search-box"
+                   placeholder="Szukaj po numerze wynajmu, kliencie, samochodzie...">
+        </div>
+
+        <!-- Rents Table -->
+        <div class="table-responsive">
+            <table class="table table-dark-custom">
+                <thead>
+                    <tr>
+                        <th>Nr wynajmu</th>
+                        <th>Samochod</th>
+                        <th>Klient</th>
+                        <th>Okres wynajmu</th>
+                        <th>Stawka dzienna</th>
+                        <th>Status</th>
+                        <th class="text-end">Kwota</th>
+                    </tr>
+                </thead>
+                <tbody id="rentsTable">
+                    <tr th:each="rent : ${rents}" class="rent-row"
+                        th:attr="data-search=${rent.rentNumber + ' ' +
+                                              rent.car.model.brand.name + ' ' + rent.car.model.name + ' ' +
+                                              rent.client.firstName + ' ' + rent.client.lastName}">
+                        <td>
+                            <span class="fw-bold" th:text="${rent.rentNumber}">RN-001</span>
+                        </td>
+                        <td>
+                            <span th:text="${rent.car.model.brand.name + ' ' + rent.car.model.name}">Marka Model</span>
+                            <br>
+                            <small class="text-secondary" th:text="${rent.car.registrationNumber}">WX12345</small>
+                        </td>
+                        <td>
+                            <span th:text="${rent.client.firstName + ' ' + rent.client.lastName}">Imie Nazwisko</span>
+                            <br>
+                            <small class="text-secondary" th:text="${rent.client.email}">email@example.com</small>
+                        </td>
+                        <td>
+                            <span th:text="${#temporals.format(rent.rentStart, 'dd.MM.yyyy')}">01.01.2024</span>
+                            <span class="text-secondary"> - </span>
+                            <span th:text="${#temporals.format(rent.rentEnd, 'dd.MM.yyyy')}">07.01.2024</span>
+                        </td>
+                        <td th:text="${#numbers.formatDecimal(rent.dailyRate, 0, 'COMMA', 2, 'POINT')} + ' PLN'">0 PLN</td>
+                        <td>
+                            <span class="badge"
+                                  th:classappend="${rent.status.name() == 'ACTIVE'} ? 'bg-success' :
+                                                  (${rent.status.name() == 'COMPLETED'} ? 'bg-info' :
+                                                  (${rent.status.name() == 'CANCELLED'} ? 'bg-secondary' : 'bg-danger'))"
+                                  th:text="${rent.status.displayName}">Status</span>
+                        </td>
+                        <td class="text-end fw-bold text-primary"
+                            th:text="${#numbers.formatDecimal(rent.totalAmount, 0, 'COMMA', 2, 'POINT')} + ' PLN'">0 PLN</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- No Results -->
+        <div id="noResults" class="text-center py-5" style="display: none;">
+            <i class="bi bi-search text-secondary" style="font-size: 3rem;"></i>
+            <h4 class="text-secondary mt-3">Nie znaleziono wynajmow</h4>
+            <p class="text-secondary">Sprobuj zmienic kryteria wyszukiwania</p>
+        </div>
+
+        <!-- Empty State -->
+        <div th:if="${#lists.isEmpty(rents)}" class="text-center py-5">
+            <i class="bi bi-key text-secondary" style="font-size: 3rem;"></i>
+            <h4 class="text-secondary mt-3">Brak wynajmow</h4>
+            <p class="text-secondary">Nie zarejestrowano jeszcze zadnych wynajmow</p>
+        </div>
+
+    </section>
+
+    <script th:inline="javascript">
+        document.getElementById('searchInput').addEventListener('keyup', function() {
+            filterTable();
+        });
+
+        function filterTable() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const rows = Array.from(document.querySelectorAll('.rent-row'));
+            let visibleCount = 0;
+
+            rows.forEach(row => {
+                const searchData = row.dataset.search.toLowerCase();
+                const matches = searchData.includes(searchTerm);
+                row.style.display = matches ? '' : 'none';
+                if (matches) visibleCount++;
+            });
+
+            document.getElementById('noResults').style.display = visibleCount === 0 && rows.length > 0 ? 'block' : 'none';
+        }
+    </script>
+</div>
+</body>
+</html>

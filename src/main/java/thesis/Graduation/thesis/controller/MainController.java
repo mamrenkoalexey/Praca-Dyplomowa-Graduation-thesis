@@ -37,14 +37,19 @@ public class MainController {
     @GetMapping("/models")
     @ResponseBody
     public List<Map<String, Object>> getModelsByBrand(@RequestParam Long brand) {
-        return carService.getModelsByBrand(brand).stream()
-                .map(m -> {
-                    Map<String, Object> map = new HashMap<>();
-                    map.put("id", m.getId());
-                    map.put("name", m.getName());
-                    return map;
-                })
-                .collect(Collectors.toList());
+        try {
+            List<thesis.Graduation.thesis.entity.Model> models = carService.getModelsByBrand(brand);
+            return models.stream()
+                    .map(m -> {
+                        Map<String, Object> map = new HashMap<>();
+                        map.put("id", m.getId());
+                        map.put("name", m.getName());
+                        return map;
+                    })
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            return Collections.emptyList();
+        }
     }
 
 
@@ -97,14 +102,14 @@ public class MainController {
         model.addAttribute("searchCarModel", carModel);
         model.addAttribute("carBodyTypes", BodyType.values());
         model.addAttribute("searchCarBodyType", bodyType);
-        model.addAttribute("carPriceFrom", priceFrom);
-        model.addAttribute("carPriceTo", priceTo);
+        model.addAttribute("carPriceFrom", priceFrom != null ? priceFrom.longValue() : null);
+        model.addAttribute("carPriceTo", priceTo != null ? priceTo.longValue() : null);
         model.addAttribute("carFuelTypes", FuelType.values());
         model.addAttribute("searchCarFuelType", fuelType);
         model.addAttribute("carYears", carService.getAllProductionYear());
         model.addAttribute("searchCarYear", productionYear);
-        model.addAttribute("carMileageFrom", mileageFrom);
-        model.addAttribute("carMileageTo", mileageTo);
+        model.addAttribute("carMileageFrom", mileageFrom != null ? mileageFrom.longValue() : null);
+        model.addAttribute("carMileageTo", mileageTo != null ? mileageTo.longValue() : null);
         model.addAttribute("randomCars", carService.randomCars(12));
 
         return "search";

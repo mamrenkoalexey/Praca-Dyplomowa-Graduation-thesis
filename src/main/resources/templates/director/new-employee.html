@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layout.html">
+<head>
+    <meta charset="UTF-8">
+    <title>Dodaj nowego pracownika</title>
+    <style>
+        .form-section {
+            background: #000;
+            border-radius: 8px;
+            border: 1px solid #6c757d;
+            padding: 30px;
+        }
+        .form-control, .form-select {
+            background: #000;
+            border: 1px solid #6c757d;
+            color: #fff;
+            border-radius: 8px;
+            padding: 12px 15px;
+        }
+        .form-control:focus, .form-select:focus {
+            background: #000;
+            border-color: #0d6efd;
+            color: #fff;
+            box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+        }
+        .form-control::placeholder {
+            color: #ffffff;
+            opacity: 0.7;
+        }
+        .form-label {
+            color: #6c757d;
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+<body>
+
+<div layout:fragment="content" class="bg-gray-950 text-white font-sans">
+
+    <section class="text-center py-4 bg-gradient-dark">
+        <div class="container">
+            <h2 class="display-5 fw-bold mb-3 gradient-heading">Dodaj Nowego Pracownika</h2>
+            <p class="text-secondary fw-bold mb-0" style="font-size: 1.1rem;">
+                Wprowadz dane nowego pracownika
+            </p>
+        </div>
+    </section>
+
+    <hr class="section-divider" style="margin-top: 0px; margin-bottom: 40px;">
+
+    <div class="container pb-5">
+        <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle me-2"></i><span th:text="${errorMessage}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <form th:action="@{/director/employees/new}" th:object="${employee}" method="post"
+              class="form-section">
+
+            <div class="row">
+                <div class="col-md-6 mb-4">
+                    <label class="form-label">
+                        <i class="bi bi-person me-2"></i>Imie
+                    </label>
+                    <input type="text" class="form-control" th:field="*{firstName}" placeholder="Imie pracownika" required>
+                </div>
+                <div class="col-md-6 mb-4">
+                    <label class="form-label">
+                        <i class="bi bi-person me-2"></i>Nazwisko
+                    </label>
+                    <input type="text" class="form-control" th:field="*{lastName}" placeholder="Nazwisko pracownika" required>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-4">
+                    <label class="form-label">
+                        <i class="bi bi-envelope me-2"></i>Email
+                    </label>
+                    <input type="email" class="form-control" th:field="*{email}" placeholder="email@example.com" required>
+                </div>
+                <div class="col-md-6 mb-4">
+                    <label class="form-label">
+                        <i class="bi bi-telephone me-2"></i>Telefon
+                    </label>
+                    <input type="text" class="form-control" th:field="*{phone}" placeholder="+48 123 456 789" required>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-4">
+                    <label class="form-label">
+                        <i class="bi bi-person-badge me-2"></i>Login
+                    </label>
+                    <input type="text" class="form-control" th:field="*{login}" placeholder="Login do systemu" required>
+                </div>
+                <div class="col-md-6 mb-4">
+                    <label class="form-label">
+                        <i class="bi bi-lock me-2"></i>Haslo
+                    </label>
+                    <input type="password" class="form-control" th:field="*{password}" placeholder="Haslo" required>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-4">
+                    <label class="form-label">
+                        <i class="bi bi-briefcase me-2"></i>Stanowisko
+                    </label>
+                    <select class="form-select" th:field="*{role}" required>
+                        <option value="" disabled selected>Wybierz stanowisko</option>
+                        <option th:each="r : ${roles}"
+                                th:value="${r}"
+                                th:text="${r.displayName}">
+                        </option>
+                    </select>
+                </div>
+                <div class="col-md-6 mb-4">
+                    <label class="form-label">
+                        <i class="bi bi-cash me-2"></i>Wynagrodzenie (PLN)
+                    </label>
+                    <input type="number" step="0.01" class="form-control" th:field="*{salary}" placeholder="Wynagrodzenie" min="0" required>
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <label class="form-label">
+                    <i class="bi bi-building me-2"></i>Salon
+                </label>
+                <select class="form-select" th:field="*{salon}">
+                    <option value="" selected>Brak przypisanego salonu</option>
+                    <option th:each="s : ${salons}" th:value="${s.id}" th:text="${s.name}"></option>
+                </select>
+            </div>
+
+            <hr class="section-divider my-4">
+
+            <div class="d-flex justify-content-center gap-3">
+                <button type="submit" class="btn btn-primary px-4 py-2 fw-semibold rounded-pill shadow-sm">
+                    <i class="bi bi-check-circle me-2"></i>Zapisz
+                </button>
+                <button type="button" onclick="goBack()" class="btn btn-outline-secondary px-4 py-2 fw-semibold rounded-pill shadow-sm">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left me-2" viewBox="0 0 16 16" style="vertical-align: middle;">
+                        <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8"/>
+                    </svg>
+                    Powrot
+                </button>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+</body>
+</html>

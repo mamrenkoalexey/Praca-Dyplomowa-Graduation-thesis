@@ -45,8 +45,21 @@ public class CustomUserDetails implements UserDetails {
         this.authorities = Collections.singleton(() -> "ROLE_CLIENT");
     }
 
+    public Long getId() {
+        return id;
+    }
+
     public String getDisplayName() {
         return displayName;
+    }
+
+    public boolean isClient() {
+        return authorities.stream()
+                .anyMatch(auth -> auth.getAuthority().equals("ROLE_CLIENT"));
+    }
+
+    public boolean isEmployee() {
+        return !isClient();
     }
 
     @Override

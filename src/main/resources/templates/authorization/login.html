@@ -9,22 +9,74 @@
 
 <div layout:fragment="content" class="container py-5">
 
-    <h2 class="text-center mb-4 text-primary"> Logowanie</h2>
+    <h2 class="text-center mb-4 text-primary">Logowanie</h2>
+
+    <!-- Error Message Display -->
+    <div th:if="${param.error}" class="alert alert-danger mx-auto mb-4" role="alert" style="max-width:400px;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-exclamation-triangle-fill me-2" viewBox="0 0 16 16" style="vertical-align: middle;">
+            <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5m.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2"/>
+        </svg>
+        <strong>Błąd logowania!</strong> Nieprawidłowy login lub hasło.
+    </div>
+
+    <!-- Success Message Display (e.g., after logout) -->
+    <div th:if="${param.logout}" class="alert alert-success mx-auto mb-4" role="alert" style="max-width:400px;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-check-circle-fill me-2" viewBox="0 0 16 16" style="vertical-align: middle;">
+            <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+        </svg>
+        Wylogowano pomyślnie.
+    </div>
 
     <form th:action="@{/login}" method="post" class="bg-secondary p-4 rounded-4 shadow-lg mx-auto"
           style="max-width:400px;">
         <div class="mb-3">
-            <label class="form-label text-light">Email</label>
-            <input type="text" name="username" class="input-dark" placeholder="Wpisz email">
+            <label class="form-label text-light">Login <span class="text-danger">*</span></label>
+            <input type="text"
+                   name="username"
+                   class="input-dark"
+                   placeholder="Wpisz login"
+                   required
+                   autocomplete="username"
+                   autofocus>
+            <div class="invalid-feedback">
+                Login jest wymagany.
+            </div>
         </div>
 
         <div class="mb-3">
-            <label class="form-label text-light">Hasło</label>
-            <input type="password" name="password" class="input-dark" placeholder="Wpisz hasło">
+            <label class="form-label text-light">Hasło <span class="text-danger">*</span></label>
+            <input type="password"
+                   name="password"
+                   class="input-dark"
+                   placeholder="Wpisz hasło"
+                   required
+                   autocomplete="current-password"
+                   minlength="3">
+            <div class="invalid-feedback">
+                Hasło jest wymagane.
+            </div>
+        </div>
+
+        <!-- Remember Me Checkbox -->
+        <div class="mb-3 form-check">
+            <input type="checkbox"
+                   class="form-check-input"
+                   id="rememberMe"
+                   name="remember-me"
+                   style="background-color: #2d3748; border-color: #4a5568;">
+            <label class="form-check-label text-light" for="rememberMe">
+                Zapamiętaj mnie
+            </label>
         </div>
 
         <div class="text-center">
-            <button type="submit" class="btn btn-primary btn-lg px-5">Zaloguj</button>
+            <button type="submit" class="btn btn-primary btn-lg px-5 w-100">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-box-arrow-in-right me-2" viewBox="0 0 16 16" style="vertical-align: middle;">
+                    <path fill-rule="evenodd" d="M6 3.5a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-2a.5.5 0 0 0-1 0v2A1.5 1.5 0 0 0 6.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2h-8A1.5 1.5 0 0 0 5 3.5v2a.5.5 0 0 0 1 0z"/>
+                    <path fill-rule="evenodd" d="M11.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5H1.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708z"/>
+                </svg>
+                Zaloguj
+            </button>
         </div>
     </form>
 

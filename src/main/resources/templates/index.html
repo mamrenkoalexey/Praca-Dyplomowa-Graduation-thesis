@@ -10,17 +10,18 @@
 <body>
 <div layout:fragment="content" class="bg-gray-950 text-white font-sans">
 
-    <section class="text-center py-2 bg-gradient-dark">
-
+    <section class="text-center py-4 bg-gradient-dark">
         <div class="container">
-            <h2 class="display-5 fw-bold mb-3">Znajdź idealny samochód z Nami</h2>
-            <p class="text-secondary fw-bold mb-4">Przeglądaj, filtruj i porównuj samochody różnych marek</p>
+            <h2 class="display-5 fw-bold mb-3 gradient-heading">Znajdź idealny samochód z Nami</h2>
+            <p class="text-secondary fw-bold mb-0" style="font-size: 1.1rem;">Przeglądaj, filtruj i porównuj samochody różnych marek</p>
         </div>
-
     </section>
 
+    <hr class="section-divider" style="margin-top: 0px; margin-bottom: 20px;">
+
     <section class="content pb-4">
-        <form action="/search" method="get" class="row g-3 filter-form">
+        <div class="container" style="max-width: 1200px;">
+            <form action="/search" method="get" class="row g-3 filter-form">
 
             <div class="col-md-6">
                 <select id="carBrandSelect"
@@ -50,7 +51,7 @@
                 <select class="select2-dark" name="carBodyType" style="width:100%">
                     <option value="">Typ Nadwozia</option>
                     <th:block th:each="type : ${carBodyTypes}">
-                        <option th:value="${type}" th:text="${type}"></option>
+                        <option th:value="${type}" th:text="${type.displayName}"></option>
                     </th:block>
                 </select>
             </div>
@@ -59,8 +60,9 @@
                 <input type="number"
                        name="carPriceFrom"
                        class="input-dark"
-                       placeholder="Cena od"
-                       min="5000"
+                       placeholder="Cena od (PLN)"
+                       min="0"
+                       step="1000"
                        th:value="${carPriceFrom}">
             </div>
 
@@ -68,7 +70,7 @@
                 <select class="select2-dark" name="carFuelType" style="width:100%">
                     <option value="">Rodzaj paliwa</option>
                     <th:block th:each="fuel : ${carFuelTypes}">
-                        <option th:value="${fuel}" th:text="${fuel}"></option>
+                        <option th:value="${fuel}" th:text="${fuel.displayName}"></option>
                     </th:block>
                 </select>
             </div>
@@ -89,35 +91,55 @@
                 </button>
             </div>
         </form>
+        </div>
     </section>
 
+    <hr class="section-divider">
 
     <section class="container pt-2 pb-4">
         <div class="row g-4">
             <div class="col-sm-6 col-lg-4" th:each="randomCar : ${randomCars}">
-                <div class="card bg-black border border-secondary h-100 shadow-sm car-card">
-                    <div class="image-wrapper">
-                        <img th:src="@{/cars/{img}(img=${randomCar.carImage ?: 'default.png'})}"
-                             class="img-fluid rounded shadow"
-                             style="width: 100%; height: 220px; object-fit: cover;">
-                        <a th:href="@{/car/{id}(id=${randomCar.id}, from='/')}"
-                           class="btn btn-primary btn-details">Szczegóły</a>
-                    </div>
+                <a th:href="@{/car/{id}(id=${randomCar.id}, from='/')}" class="card-link">
+                    <div class="card bg-black border border-secondary h-100 shadow-sm car-card">
+                        <div class="image-wrapper">
+                            <img th:src="@{/cars/{img}(img=${randomCar.carImage ?: 'default.png'})}"
+                                 class="img-fluid rounded shadow"
+                                 style="width: 100%; height: 220px; object-fit: cover;">
+                        </div>
 
-                    <div class="card-body">
-                        <h3 class="card-title text-light"
-                            th:text="${randomCar.model.brand.name + ' ' + randomCar.model.name}">Nazwa</h3>
-                        <p class="card-text text-secondary"
-                           th:text="'Rok: ' + ${randomCar.productionYear} + ' Przebieg: ' + ${randomCar.mileage} + ' km'">
-                            Dodatkowa
-                            informacja</p>
-                        <p class="text-primary fw-semibold fs-5 mb-3" th:text="${randomCar.price + ' PLN'}">Cena</p>
+                        <div class="card-body">
+                            <h3 class="card-title text-light"
+                                th:text="${randomCar.model.brand.name + ' ' + randomCar.model.name}">Nazwa</h3>
+                            <p class="card-text text-secondary"
+                               th:text="'Rok: ' + ${randomCar.productionYear} + ' Przebieg: ' + ${randomCar.mileage} + ' km'">
+                                Dodatkowa
+                                informacja</p>
+                            <p class="text-primary fw-semibold fs-5 mb-3" th:text="${randomCar.formattedPrice + ' PLN'}">Cena</p>
+                        </div>
                     </div>
-
-                </div>
+                </a>
             </div>
         </div>
     </section>
+
+    <hr class="section-divider">
+
+    <!-- Salons Section -->
+    <section class="text-center py-5 bg-gradient-dark">
+        <div class="container">
+            <h2 class="display-5 fw-bold mb-3 gradient-heading">Odwiedź nasze salony</h2>
+            <p class="text-secondary mb-4 fw-bold" style="font-size: 1.1rem;">
+                Sprawdź lokalizacje naszych salonów i zobacz samochody na żywo
+            </p>
+            <a th:href="@{/salon}" class="btn btn-primary btn-lg px-5 py-3 rounded-pill shadow-lg">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-geo-alt-fill me-2" viewBox="0 0 16 16" style="vertical-align: middle;">
+                    <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10m0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6"/>
+                </svg>
+                Przeglądaj salony
+            </a>
+        </div>
+    </section>
+
 </div>
 </body>
 </html>

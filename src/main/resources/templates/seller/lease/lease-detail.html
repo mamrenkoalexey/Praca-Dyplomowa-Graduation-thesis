@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layout.html">
+<head>
+    <title>Szczegóły Leasingu | FAST BUY CAR</title>
+</head>
+<body>
+<div layout:fragment="content" class="bg-gray-950 text-white font-sans">
+
+    <section class="container py-5">
+        <div class="mb-4">
+            <a th:href="@{/seller/leases}" class="btn btn-outline-secondary px-4 py-2 rounded-pill">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left me-2" viewBox="0 0 16 16" style="vertical-align: middle;">
+                    <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8"/>
+                </svg>
+                Powrót do listy leasingów
+            </a>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="gradient-heading">Szczegóły Leasingu</h2>
+            <span th:class="${'badge fs-5 ' +
+                (lease.status.name() == 'ACTIVE' ? 'bg-success' :
+                 lease.status.name() == 'PENDING' ? 'bg-warning' :
+                 lease.status.name() == 'COMPLETED' ? 'bg-info' :
+                 'bg-secondary')}"
+                  th:text="${lease.status.displayName}">Status</span>
+        </div>
+
+        <!-- Success/Error Messages -->
+        <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <span th:text="${successMessage}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+
+        <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <span th:text="${errorMessage}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+
+        <div class="row g-4">
+            <!-- Lease Information -->
+            <div class="col-lg-8">
+                <div class="card bg-black border border-secondary p-4 mb-4">
+                    <h4 class="text-light mb-4">Informacje o Leasingu</h4>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <p class="text-secondary mb-1">Numer umowy</p>
+                            <p class="text-light fw-bold fs-5" th:text="${lease.contractNumber}">LEASE-ABC123</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p class="text-secondary mb-1">Data rozpoczęcia</p>
+                            <p class="text-light fw-bold" th:text="${#temporals.format(lease.startDate, 'dd MMMM yyyy', new java.util.Locale('pl'))}">01 stycznia 2024</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p class="text-secondary mb-1">Data zakończenia</p>
+                            <p class="text-light fw-bold" th:text="${#temporals.format(lease.endDate, 'dd MMMM yyyy', new java.util.Locale('pl'))}">31 grudnia 2024</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p class="text-secondary mb-1">Okres leasingu</p>
+                            <p class="text-light fw-bold" th:text="${lease.leaseDurationInMonths + ' miesięcy'}">12 miesięcy</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p class="text-secondary mb-1">Wpłata początkowa</p>
+                            <p class="text-success fw-bold fs-5" th:text="${lease.formattedInitialPayment + ' PLN'}">10000.00 PLN</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p class="text-secondary mb-1">Rata miesięczna</p>
+                            <p class="text-primary fw-bold fs-5" th:text="${lease.formattedMonthlyPayment + ' PLN'}">2000.00 PLN</p>
+                        </div>
+                        <div class="col-md-12">
+                            <hr class="border-secondary">
+                        </div>
+                        <div class="col-md-4">
+                            <p class="text-secondary mb-1">Łączna wartość</p>
+                            <p class="text-success fw-bold fs-4" th:text="${lease.formattedTotalValue + ' PLN'}">34000.00 PLN</p>
+                        </div>
+                        <div class="col-md-4">
+                            <p class="text-secondary mb-1">Zapłacono</p>
+                            <p class="text-info fw-bold fs-4" th:text="${lease.formattedTotalPaid + ' PLN'}">10000.00 PLN</p>
+                        </div>
+                        <div class="col-md-4">
+                            <p class="text-secondary mb-1">Pozostało</p>
+                            <p class="text-warning fw-bold fs-4" th:text="${lease.formattedRemainingAmount + ' PLN'}">24000.00 PLN</p>
+                        </div>
+                    </div>
+
+                    <!-- Notes -->
+                    <div th:if="${lease.notes}" class="mt-4">
+                        <p class="text-secondary mb-2">Notatki</p>
+                        <p class="text-light" style="white-space: pre-wrap;" th:text="${lease.notes}">Notatki...</p>
+                    </div>
+                </div>
+
+                <!-- Car Information -->
+                <div class="card bg-black border border-secondary p-4 mb-4">
+                    <h4 class="text-light mb-4">Samochód</h4>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <img th:src="@{/cars/{img}(img=${lease.car.carImage ?: 'default.png'})}"
+                                 class="img-fluid rounded shadow"
+                                 style="width: 100%; height: 150px; object-fit: cover;">
+                        </div>
+                        <div class="col-md-8">
+                            <h5 class="text-light mb-3" th:text="${lease.car.model.brand.name + ' ' + lease.car.model.name}">Toyota Corolla</h5>
+                            <div class="row g-2">
+                                <div class="col-6">
+                                    <p class="text-secondary mb-1 small">Rok produkcji</p>
+                                    <p class="text-light" th:text="${lease.car.productionYear}">2020</p>
+                                </div>
+                                <div class="col-6">
+                                    <p class="text-secondary mb-1 small">Przebieg</p>
+                                    <p class="text-light" th:text="${#numbers.formatDecimal(lease.car.mileage, 0, 'COMMA', 0, 'POINT')} + ' km'">50000 km</p>
+                                </div>
+                                <div class="col-6">
+                                    <p class="text-secondary mb-1 small">VIN</p>
+                                    <p class="text-light" th:text="${lease.car.vin}">ABC123456789</p>
+                                </div>
+                                <div class="col-6">
+                                    <p class="text-secondary mb-1 small">Kolor</p>
+                                    <p class="text-light" th:text="${lease.car.color}">Czarny</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Client Information -->
+                <div class="card bg-black border border-secondary p-4 mb-4">
+                    <h4 class="text-light mb-4">Klient</h4>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <p class="text-secondary mb-1">Imię i nazwisko</p>
+                            <p class="text-light fw-bold" th:text="${lease.client.firstName + ' ' + lease.client.lastName}">Jan Kowalski</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p class="text-secondary mb-1">Email</p>
+                            <p class="text-light" th:text="${lease.client.email}">jan@example.com</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p class="text-secondary mb-1">Telefon</p>
+                            <p class="text-light" th:text="${lease.client.phoneNumber}">+48 123 456 789</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p class="text-secondary mb-1">Pracownik odpowiedzialny</p>
+                            <p class="text-light" th:text="${lease.employee.firstName + ' ' + lease.employee.lastName}">Anna Nowak</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Payment Schedule & Actions -->
+            <div class="col-lg-4">
+                <!-- Actions -->
+                <div class="card bg-black border border-secondary p-4 mb-4">
+                    <h5 class="text-light mb-3">Akcje</h5>
+
+                    <!-- Activate Button -->
+                    <form th:if="${lease.status.name() == 'PENDING'}"
+                          th:action="@{/seller/leases/{id}/activate(id=${lease.id})}"
+                          method="post" class="mb-2">
+                        <button type="submit" class="btn btn-success w-100">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-play-circle me-2" viewBox="0 0 16 16" style="vertical-align: middle;">
+                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                                <path d="M6.271 5.055a.5.5 0 0 1 .52.038l3.5 2.5a.5.5 0 0 1 0 .814l-3.5 2.5A.5.5 0 0 1 6 10.5v-5a.5.5 0 0 1 .271-.445"/>
+                            </svg>
+                            Aktywuj Leasing
+                        </button>
+                    </form>
+
+                    <!-- Complete Button -->
+                    <form th:if="${lease.status.name() == 'ACTIVE'}"
+                          th:action="@{/seller/leases/{id}/complete(id=${lease.id})}"
+                          method="post" class="mb-2">
+                        <button type="submit" class="btn btn-info w-100">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-circle me-2" viewBox="0 0 16 16" style="vertical-align: middle;">
+                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                                <path d="m10.97 4.97-.02.022-3.473 4.425-2.093-2.094a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05"/>
+                            </svg>
+                            Zakończ Leasing
+                        </button>
+                    </form>
+
+                    <!-- Terminate Button -->
+                    <div th:if="${lease.status.name() == 'ACTIVE' || lease.status.name() == 'PENDING'}">
+                        <button type="button" class="btn btn-danger w-100" data-bs-toggle="modal" data-bs-target="#terminateModal">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-circle me-2" viewBox="0 0 16 16" style="vertical-align: middle;">
+                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                                <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708"/>
+                            </svg>
+                            Rozwiąż Leasing
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Payment Schedule -->
+                <div class="card bg-black border border-secondary p-4">
+                    <h5 class="text-light mb-3">Harmonogram Płatności</h5>
+
+                    <!-- Pending Payments -->
+                    <div th:if="${!#lists.isEmpty(pendingPayments)}">
+                        <h6 class="text-warning mb-3">Oczekujące płatności</h6>
+                        <div th:each="payment : ${pendingPayments}" class="mb-3 p-3 bg-dark border border-warning rounded">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <div>
+                                    <p class="text-secondary mb-1 small">Termin płatności</p>
+                                    <p class="text-light fw-bold mb-2" th:text="${#temporals.format(payment.deuDate, 'dd MMM yyyy', new java.util.Locale('pl'))}">01 sty 2024</p>
+                                    <p class="text-warning fw-bold fs-5" th:text="${#numbers.formatDecimal(payment.amount, 0, 'COMMA', 2, 'POINT')} + ' PLN'">2000.00 PLN</p>
+                                </div>
+                                <button type="button"
+                                        class="btn btn-sm btn-success"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#paymentModal"
+                                        th:data-payment-id="${payment.id}"
+                                        th:data-payment-amount="${payment.amount}"
+                                        th:data-payment-due="${#temporals.format(payment.deuDate, 'dd-MM-yyyy')}">
+                                    Opłać
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Completed Payments -->
+                    <div th:if="${!#lists.isEmpty(completedPayments)}" class="mt-4">
+                        <h6 class="text-success mb-3">Zrealizowane płatności</h6>
+                        <div th:each="payment : ${completedPayments}" class="mb-2 p-2 bg-dark border border-success rounded">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <p class="text-secondary mb-0 small" th:text="${#temporals.format(payment.paymentDate, 'dd MMM yyyy', new java.util.Locale('pl'))}">01 sty 2024</p>
+                                </div>
+                                <p class="text-success mb-0 fw-bold" th:text="${#numbers.formatDecimal(payment.amount, 0, 'COMMA', 2, 'POINT')} + ' PLN'">2000.00 PLN</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- No payments message -->
+                    <div th:if="${#lists.isEmpty(pendingPayments) && #lists.isEmpty(completedPayments)}" class="text-center py-4">
+                        <p class="text-secondary mb-0">Brak płatności</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Terminate Modal -->
+    <div class="modal fade" id="terminateModal" tabindex="-1" aria-labelledby="terminateModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content bg-dark text-light">
+                <div class="modal-header border-secondary">
+                    <h5 class="modal-title" id="terminateModalLabel">Rozwiąż Leasing</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form th:action="@{/seller/leases/{id}/terminate(id=${lease.id})}" method="post">
+                    <div class="modal-body">
+                        <p class="text-warning">Czy na pewno chcesz rozwiązać ten leasing?</p>
+                        <div class="mb-3">
+                            <label for="reason" class="form-label">Powód rozwiązania <span class="text-danger">*</span></label>
+                            <textarea class="form-control input-dark" id="reason" name="reason" rows="3" required></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer border-secondary">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Anuluj</button>
+                        <button type="submit" class="btn btn-danger">Rozwiąż Leasing</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Payment Modal -->
+    <div class="modal fade" id="paymentModal" tabindex="-1" aria-labelledby="paymentModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content bg-dark text-light">
+                <div class="modal-header border-secondary">
+                    <h5 class="modal-title" id="paymentModalLabel">Zrealizuj Płatność</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="paymentForm" method="post">
+                    <div class="modal-body">
+                        <p class="mb-3">
+                            <strong>Termin:</strong> <span id="modalPaymentDue"></span><br>
+                            <strong>Kwota:</strong> <span id="modalPaymentAmount" class="text-success"></span> PLN
+                        </p>
+                        <div class="mb-3">
+                            <label for="method" class="form-label">Metoda płatności <span class="text-danger">*</span></label>
+                            <select class="form-select input-dark" id="method" name="method" required>
+                                <option value="">-- Wybierz metodę --</option>
+                                <option th:each="paymentMethod : ${paymentMethods}"
+                                        th:value="${paymentMethod}"
+                                        th:text="${paymentMethod.displayName}">Gotówka</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer border-secondary">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Anuluj</button>
+                        <button type="submit" class="btn btn-success">Potwierdź Płatność</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<th:block layout:fragment="scripts">
+    <script>
+        $(document).ready(function() {
+            // Handle payment modal
+            $('#paymentModal').on('show.bs.modal', function (event) {
+                const button = $(event.relatedTarget);
+                const paymentId = button.data('payment-id');
+                const paymentAmount = button.data('payment-amount');
+                const paymentDue = button.data('payment-due');
+
+                const modal = $(this);
+                const leaseId = [[${lease.id}]];
+
+                modal.find('#modalPaymentDue').text(paymentDue);
+                modal.find('#modalPaymentAmount').text(paymentAmount.toFixed(2));
+                modal.find('#paymentForm').attr('action', '/seller/leases/' + leaseId + '/payments/' + paymentId + '/process');
+            });
+        });
+    </script>
+</th:block>
+</body>
+</html>

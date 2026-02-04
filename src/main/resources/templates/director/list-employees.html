@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layout.html">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Lista pracownikow</title>
+    <style>
+        .filter-section {
+            background: #000;
+            border-radius: 8px;
+            border: 1px solid #6c757d;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+        .search-box {
+            border-radius: 8px;
+            border: 1px solid #6c757d;
+            background: #000;
+            color: #fff;
+            padding: 12px 20px;
+        }
+        .search-box:focus {
+            background: #000;
+            border-color: #0d6efd;
+            color: #fff;
+            box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+        }
+        .search-box::placeholder {
+            color: #ffffff;
+            opacity: 0.7;
+        }
+        .employee-card {
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+        .employee-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5) !important;
+        }
+        .card-link {
+            text-decoration: none;
+            color: inherit;
+        }
+        .status-active {
+            color: #198754;
+        }
+        .status-inactive {
+            color: #dc3545;
+        }
+        .role-badge {
+            font-size: 0.75rem;
+            padding: 4px 10px;
+            border-radius: 20px;
+        }
+    </style>
+</head>
+<body>
+<div layout:fragment="content" class="bg-gray-950 text-white font-sans">
+
+    <section class="text-center py-4 bg-gradient-dark">
+        <div class="container">
+            <h2 class="display-5 fw-bold mb-3 gradient-heading">Lista Pracownikow</h2>
+            <p class="text-secondary fw-bold mb-0" style="font-size: 1.1rem;">
+                Lacznie: <span class="text-primary" th:text="${#lists.size(employees)}">0</span> pracownikow w bazie
+            </p>
+        </div>
+    </section>
+
+    <hr class="section-divider" style="margin-top: 0px; margin-bottom: 40px;">
+
+    <section class="container pb-5">
+        <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle me-2"></i><span th:text="${successMessage}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <div class="text-end mb-4">
+            <a th:href="@{/director/employees/new}" class="btn btn-primary btn-lg rounded-pill px-4">
+                <i class="bi bi-plus-circle me-2"></i>Dodaj nowego pracownika
+            </a>
+        </div>
+
+        <div class="filter-section">
+            <label class="form-label text-secondary small mb-2">
+                <i class="bi bi-search me-1"></i>Wyszukaj pracownika
+            </label>
+            <input type="text" id="searchInput" class="form-control search-box"
+                   placeholder="Szukaj po imieniu, nazwisku, stanowisku...">
+        </div>
+
+        <div class="row g-4" id="employeesGrid">
+            <div class="col-sm-6 col-lg-4 employee-item" th:each="employee : ${employees}"
+                 th:attr="data-name=${employee.firstName + ' ' + employee.lastName},
+                          data-role=${employee.role.displayName},
+                          data-email=${employee.email},
+                          data-active=${employee.active}">
+                <a th:href="@{/director/employees/view/{id}(id=${employee.id})}" class="card-link">
+                    <div class="card bg-black border border-secondary h-100 shadow-sm employee-card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <div>
+                                    <h5 class="card-title text-light mb-1"
+                                        th:text="${employee.firstName + ' ' + employee.lastName}">Imie Nazwisko</h5>
+                                    <span class="badge role-badge"
+                                          th:classappend="${employee.role.name() == 'DIRECTOR'} ? 'bg-danger' :
+                                                          (${employee.role.name() == 'MANAGER'} ? 'bg-warning text-dark' :
+                                                          (${employee.role.name() == 'SELLER'} ? 'bg-info' : 'bg-secondary'))"
+                                          th:text="${employee.role.displayName}">Rola</span>
+                                </div>
+                                <span th:if="${employee.active}" class="status-active">
+                                    <i class="bi bi-check-circle-fill"></i>
+                                </span>
+                                <span th:unless="${employee.active}" class="status-inactive">
+                                    <i class="bi bi-x-circle-fill"></i>
+                                </span>
+                            </div>
+
+                            <div class="mb-2">
+                                <span class="text-secondary small">
+                                    <i class="bi bi-envelope me-1"></i>
+                                    <span th:text="${employee.email}">email@example.com</span>
+                                </span>
+                            </div>
+                            <div class="mb-2">
+                                <span class="text-secondary small">
+                                    <i class="bi bi-telephone me-1"></i>
+                                    <span th:text="${employee.phone}">+48 123 456 789</span>
+                                </span>
+                            </div>
+                            <div th:if="${employee.salon != null}" class="mb-2">
+                                <span class="text-secondary small">
+                                    <i class="bi bi-building me-1"></i>
+                                    <span th:text="${employee.salon.name}">Salon</span>
+                                </span>
+                            </div>
+
+                            <div class="d-flex justify-content-between align-items-center mt-3 pt-2 border-top border-secondary">
+                                <span class="text-primary fw-bold" th:text="${#numbers.formatDecimal(employee.salary, 0, 'COMMA', 2, 'POINT')} + ' PLN'">0 PLN</span>
+                                <span class="text-secondary small" th:text="'ID: ' + ${employee.id}">ID: 1</span>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <div id="noResults" class="text-center py-5" style="display: none;">
+            <i class="bi bi-search text-secondary" style="font-size: 3rem;"></i>
+            <h4 class="text-secondary mt-3">Nie znaleziono pracownikow</h4>
+            <p class="text-secondary">Sprobuj zmienic kryteria wyszukiwania</p>
+        </div>
+    </section>
+
+    <script th:inline="javascript">
+        document.getElementById('searchInput').addEventListener('keyup', function() {
+            filterEmployees();
+        });
+
+        function filterEmployees() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const employeeItems = Array.from(document.querySelectorAll('.employee-item'));
+
+            let visibleCount = 0;
+
+            employeeItems.forEach(item => {
+                const name = item.dataset.name.toLowerCase();
+                const role = item.dataset.role.toLowerCase();
+                const email = item.dataset.email.toLowerCase();
+
+                const matches = name.includes(searchTerm) ||
+                               role.includes(searchTerm) ||
+                               email.includes(searchTerm);
+
+                item.style.display = matches ? '' : 'none';
+                if (matches) visibleCount++;
+            });
+
+            document.getElementById('noResults').style.display = visibleCount === 0 ? 'block' : 'none';
+        }
+    </script>
+</div>
+</body>
+</html>

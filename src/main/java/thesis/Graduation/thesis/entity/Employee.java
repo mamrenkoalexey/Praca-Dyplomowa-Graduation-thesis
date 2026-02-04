@@ -149,7 +149,7 @@ public class Employee extends BaseEntity {
         this.salon = salon;
     }
 
-    public double getSalary() {
+    public Double getSalary() {
         return salary;
     }
 

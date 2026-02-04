@@ -5,31 +5,78 @@
 <head>
     <meta charset="UTF-8">
     <title>Dodaj Nowy Model</title>
+    <style>
+        .form-section {
+            background: #000;
+            border-radius: 8px;
+            border: 1px solid #6c757d;
+            padding: 30px;
+        }
+        .form-control, .form-select {
+            background: #000;
+            border: 1px solid #6c757d;
+            color: #fff;
+            border-radius: 8px;
+            padding: 12px 15px;
+        }
+        .form-control:focus, .form-select:focus {
+            background: #000;
+            border-color: #0d6efd;
+            color: #fff;
+            box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+        }
+        .form-control::placeholder {
+            color: #ffffff;
+            opacity: 0.7;
+        }
+        .form-label {
+            color: #6c757d;
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+    </style>
 </head>
-<body class="bg-dark text-light">
+<body>
 
 <div layout:fragment="content" class="bg-gray-950 text-white font-sans">
-    <div class="container py-5">
-        <h2 class="text-center mb-4 text-primary">Dodaj nowy model</h2>
 
+    <!-- Header Section -->
+    <section class="text-center py-4 bg-gradient-dark">
+        <div class="container">
+            <h2 class="display-5 fw-bold mb-3 gradient-heading">Dodaj Nowy Model</h2>
+            <p class="text-secondary fw-bold mb-0" style="font-size: 1.1rem;">
+                Wprowadź informacje o nowym modelu pojazdu
+            </p>
+        </div>
+    </section>
+
+    <hr class="section-divider" style="margin-top: 0px; margin-bottom: 40px;">
+
+    <div class="container pb-5" style="max-width: 800px;">
         <form th:action="@{/manager/add-model}" th:object="${newModel}" method="post"
-              class="bg-secondary p-4 rounded-4 shadow-lg">
-            <div th:if="${errorMessage}" class="alert alert-danger text-center">
-                <p th:text="${errorMessage}"></p>
+              class="form-section">
+            
+            <div th:if="${errorMessage}" class="alert alert-danger mb-4">
+                <i class="bi bi-exclamation-triangle me-2"></i>
+                <span th:text="${errorMessage}"></span>
             </div>
 
-            <div class="mb-3">
-                <label class="form-label text-light">Nazwa modelu</label>
+            <div class="mb-4">
+                <label class="form-label">
+                    <i class="bi bi-car-front me-2"></i>Nazwa modelu
+                </label>
                 <input type="text" class="form-control" th:field="*{name}" placeholder="Wpisz nazwę modelu" required>
             </div>
 
-            <div class="mb-3">
+            <div class="mb-4">
                 <div class="d-flex justify-content-between align-items-center mb-2">
-                    <label class="form-label text-light mb-0" style="font-size: 0.95rem;">Marka</label>
+                    <label class="form-label mb-0">
+                        <i class="bi bi-award me-2"></i>Marka
+                    </label>
                     <a th:href="@{/manager/add-brand}"
-                       class="btn btn-sm btn-primary shadow-sm"
-                       style="font-weight: 500;">
-                        + Dodaj nową markę
+                       class="btn btn-sm btn-primary rounded-pill">
+                        <i class="bi bi-plus-circle me-1"></i>Dodaj nową markę
                     </a>
                 </div>
                 <select class="form-select" th:field="*{brand}" required>
@@ -38,35 +85,39 @@
                 </select>
             </div>
 
-            <div class="mb-3">
-                <label class="form-label text-light">Generacja</label>
-                <input type="text" class="form-control" th:field="*{generation}" placeholder="Np. II, F30, MK7"
-                       required>
+            <div class="mb-4">
+                <label class="form-label">
+                    <i class="bi bi-tag me-2"></i>Generacja
+                </label>
+                <input type="text" class="form-control" th:field="*{generation}" placeholder="Np. II, F30, MK7" required>
             </div>
 
             <div class="row">
-                <div class="col-md-6 mb-3">
-                    <label class="form-label text-light">Rok produkcji (od)</label>
-                    <input type="number" min="1950" max="2025" class="form-control"
+                <div class="col-md-6 mb-4">
+                    <label class="form-label">
+                        <i class="bi bi-calendar-event me-2"></i>Rok produkcji (od)
+                    </label>
+                    <input type="number" min="1950" max="2030" class="form-control"
                            th:field="*{yearFrom}" placeholder="Np. 2015" required>
                 </div>
-                <div class="col-md-6 mb-3">
-                    <label class="form-label text-light">Rok produkcji (do)</label>
-                    <input type="number" min="1950" max="2025" class="form-control"
+                <div class="col-md-6 mb-4">
+                    <label class="form-label">
+                        <i class="bi bi-calendar-check me-2"></i>Rok produkcji (do)
+                    </label>
+                    <input type="number" min="1950" max="2030" class="form-control"
                            th:field="*{yearTo}" placeholder="Np. 2020" required>
                 </div>
             </div>
 
-            <div class="mb-3">
-                <label class="form-label text-light">Generacja</label>
-                <input type="text" class="form-control" th:field="*{generation}" placeholder="Np. II, F30, MK7"
-                       required>
-            </div>
+            <hr class="section-divider my-4">
 
-
-            <div class="text-center mt-4">
-                <button type="submit" class="btn btn-success btn-lg px-5">Zapisz</button>
-                <a href="#" onclick="goBack()" class="btn btn-outline-light btn-lg px-5 ms-3">Powrót</a>
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary btn-lg rounded-pill px-5 me-3">
+                    <i class="bi bi-check-circle me-2"></i>Zapisz
+                </button>
+                <a href="#" onclick="history.back()" class="btn btn-secondary btn-lg rounded-pill px-5">
+                    <i class="bi bi-arrow-left me-2"></i>Powrót
+                </a>
             </div>
         </form>
     </div>

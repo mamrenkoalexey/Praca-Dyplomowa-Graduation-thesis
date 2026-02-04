@@ -22,13 +22,17 @@ public class ManagerController {
     private final SalonService salonService;
     private final BrandService brandService;
     private final ImageStorageService imageStorageService;
+    private final SaleService saleService;
+    private final ClientService clientService;
 
-    public ManagerController(CarService carService, ModelService modelService, SalonService salonService, BrandService brandService, ImageStorageService imageStorageService) {
+    public ManagerController(CarService carService, ModelService modelService, SalonService salonService, BrandService brandService, ImageStorageService imageStorageService, SaleService saleService, ClientService clientService) {
         this.carService = carService;
         this.modelService = modelService;
         this.salonService = salonService;
         this.brandService = brandService;
         this.imageStorageService = imageStorageService;
+        this.saleService = saleService;
+        this.clientService = clientService;
     }
 
     @GetMapping("/car-stats")
@@ -36,10 +40,16 @@ public class ManagerController {
         long totalBrands = brandService.count();
         long totalModels = modelService.count();
         long totalCars = carService.count();
+        long totalSales = saleService.countSales();
+        long totalClients = clientService.countClients();
+        Double totalRevenue = saleService.getTotalRevenue();
 
         model.addAttribute("totalBrands", totalBrands);
         model.addAttribute("totalModels", totalModels);
         model.addAttribute("totalCars", totalCars);
+        model.addAttribute("totalSales", totalSales);
+        model.addAttribute("totalClients", totalClients);
+        model.addAttribute("totalRevenue", totalRevenue != null ? totalRevenue : 0.0);
 
         return "manager/stats-car";
     }
@@ -80,6 +90,7 @@ public class ManagerController {
         } catch (IllegalArgumentException e) {
             model.addAttribute("errorMessage", e.getMessage());
             model.addAttribute("newModel", new thesis.Graduation.thesis.entity.Model());
+            model.addAttribute("brands", carService.getAllBrands());
             return "manager/new-model";
         }
     }
@@ -111,7 +122,14 @@ public class ManagerController {
     @GetMapping("/list-models")
     public String listModels(Model model) {
         model.addAttribute("models", modelService.getAllModels());
+        model.addAttribute("brands", carService.getAllBrands());
         return "manager/list-models";
+    }
+
+    @GetMapping("/list-brands")
+    public String listBrands(Model model) {
+        model.addAttribute("brands", brandService.getAllBrands());
+        return "manager/list-brands";
     }
 
     @GetMapping("/update/car/{id}")
@@ -151,6 +169,7 @@ public class ManagerController {
         thesis.Graduation.thesis.entity.Model carModel = modelService.getModelById(id);
         if (carModel == null) {
             model.addAttribute("errorMessage", "Nie znaleziono modelu o podanym ID.");
+            return "error";
         }
         model.addAttribute("carModel", carModel);
         model.addAttribute("brands", carService.getAllBrands());
@@ -164,5 +183,28 @@ public class ManagerController {
         return "redirect:/manager/list-models";
     }
 
+    @GetMapping("/update/brand/{id}")
+    public String updateBrand(@PathVariable Long id, Model model) {
+        Brand brand = brandService.getBrandById(id);
+        if (brand == null) {
+            model.addAttribute("errorMessage", "Nie znaleziono marki o podanym ID.");
+            return "error";
+        }
+        model.addAttribute("brand", brand);
+
+        return "manager/update-brand";
+    }
+
+    @PutMapping("/update/brand/{id}")
+    public String saveUpdateBrand(@PathVariable Long id, @ModelAttribute("brand") Brand brand, Model model) {
+        try {
+            brandService.save(brand);
+            return "redirect:/manager/list-brands";
+        } catch (IllegalArgumentException e) {
+            model.addAttribute("errorMessage", e.getMessage());
+            model.addAttribute("brand", brand);
+            return "manager/update-brand";
+        }
+    }
 
 }

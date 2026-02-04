@@ -11,26 +11,63 @@
         <nav class="d-none d-md-flex align-items-center gap-4">
 
             <a th:href="@{/}" class="text-decoration-none text-light">Strona Główna</a>
-            <a th:href="@{/manager/car-stats}" sec:authorize="hasRole('SELLER')"
-               class="text-decoration-none text-light">Proces Sprzedaży</a>
-            <a th:href="@{/manager/car-stats}" sec:authorize="hasRole('SELLER')"
-               class="text-decoration-none text-light">Proces Wynajmu</a>
-            <a th:href="@{/manager/car-stats}" sec:authorize="hasRole('MANAGER')"
-               class="text-decoration-none text-light">Proces Sprzedaży</a>
-            <a th:href="@{/manager/car-stats}" sec:authorize="hasRole('SELLER')"
-               class="text-decoration-none text-light">Proces Leasingu</a>
-            <a th:href="@{/manager/car-stats}" sec:authorize="hasRole('MANAGER')"
-               class="text-decoration-none text-light">Proces Wynajmu</a>
-            <a th:href="@{/manager/car-stats}" sec:authorize="hasRole('MANAGER')"
-               class="text-decoration-none text-light">Proces Leasingu</a>
-            <a th:href="@{/manager/car-stats}" sec:authorize="hasRole('MANAGER')"
-               class="text-decoration-none text-light">Zarządzaj Samochodami</a>
-            <a th:href="@{/manager/car-stats}" sec:authorize="hasRole('MANAGER')"
-               class="text-decoration-none text-light">Zarządzaj Klientami</a>
-            <a th:href="@{/manager/car-stats}" sec:authorize="hasRole('MANAGER')"
-               class="text-decoration-none text-light">Zarządzaj Płatnościami</a>
-            <a th:href="@{/manager/car-stats}" sec:authorize="hasRole('MANAGER')"
-               class="text-decoration-none text-light">Zarządzaj Pracownikami</a>
+
+            <!-- Seller Dropdown Menu -->
+            <div sec:authorize="hasAnyRole('SELLER', 'MANAGER', 'DIRECTOR')" class="dropdown">
+                <a class="text-decoration-none text-light dropdown-toggle" href="#" role="button"
+                   id="sellerDropdown" data-bs-toggle="dropdown" aria-expanded="false"
+                   style="cursor: pointer;">
+                    Sprzedaż
+                </a>
+                <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="sellerDropdown" style="z-index: 99999 !important">
+                    <li>
+                        <a class="dropdown-item" th:href="@{/seller/sales}">Sprzedaż</a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" th:href="@{/seller/leases}">Leasing</a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" th:href="@{/seller/rents}">Wynajem</a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Manager Dropdown Menu -->
+            <div sec:authorize="hasAnyRole('MANAGER', 'DIRECTOR')" class="dropdown">
+                <a class="text-decoration-none text-light dropdown-toggle" href="#" role="button"
+                   id="managerDropdown" data-bs-toggle="dropdown" aria-expanded="false"
+                   style="cursor: pointer;">
+                    Zarządzanie
+                </a>
+                <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="managerDropdown" style="z-index: 99999 !important">
+                    <li>
+                        <a class="dropdown-item" th:href="@{/manager/payments}">Płatności</a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" th:href="@{/manager/car-stats}">Zarządzaj Samochodami</a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" th:href="@{/manager/clients}">Zarządzaj Klientami</a>
+                    </li>
+                    <li sec:authorize="hasRole('DIRECTOR')">
+                        <a class="dropdown-item" th:href="@{/director/employees}">Zarządzaj Pracownikami</a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Director Dropdown Menu -->
+            <div sec:authorize="hasRole('DIRECTOR')" class="dropdown">
+                <a class="text-decoration-none text-light dropdown-toggle" href="#" role="button"
+                   id="directorDropdown" data-bs-toggle="dropdown" aria-expanded="false"
+                   style="cursor: pointer;">
+                    Raporty
+                </a>
+                <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="directorDropdown" style="z-index: 99999 !important">
+                    <li>
+                        <a class="dropdown-item" th:href="@{/director/reports}">Raporty Salonu</a>
+                    </li>
+                </ul>
+            </div>
 
             <div sec:authorize="isAnonymous()">
                 <a th:href="@{/login}" class="d-flex align-items-center text-decoration-none text-light">
