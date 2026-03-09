@@ -265,13 +265,6 @@ The system uses the following main entities:
 | **Invoices** | Financial documents |
 | **Payments** | Payment records |
 
-## Testing
-
-Run tests with:
-```bash
-./mvnw test
-```
-
 ## License
 
 This project was developed as part of an engineering diploma thesis at Warsaw University of Technology (WIT).
